@@ -1,0 +1,52 @@
+# Define the priors in computational space
+# there are many other examples in test/TOMLInterface/uq_test_parameters.toml
+[weertman_c_prefactor]
+prior = "Parameterized(Normal(1.0,0.3))"
+constraint = "no_constraint()"
+description = """
+Prior for the Weertman C prefactor (premltiplies weertman C field). 
+"""
+
+[ungrounded_weertmanC_prefactor]
+prior = "Parameterized(Normal(1.0,0.3))"
+constraint = "no_constraint()"
+description = """
+Prior for the ungrounded_weertmanC_prefactor (premultiplies the default value used in the cavity)
+"""
+
+[glen_a_ref_prefactor]
+prior = "Parameterized(Normal(1.0,0.3))"
+constraint = "no_constraint()"
+description = """
+Prior for the glen a ref prefactor (premultiplies the glen a ref prefactor)
+"""
+
+[melt_rate_prefactor_exponent]
+prior = "Parameterized(Normal(0.0,1.2))"
+constraint = "no_constraint()"
+description = """
+Prior for the melt rate prefactor exponent, premultiplies the melt rate prefactor by 2^(melt_rate_exponent_prefactor_exponent)
+"""
+
+[bump_amplitude]
+prior = "Parameterized(Normal(200.0,100.0))"
+constraint = "no_constraint()"
+description = """
+Prior for the amplitude of the 1945 bump. 
+"""
+
+[bump_duration]
+prior = "Parameterized(Normal(5.0,2.5))"
+constraint = "no_constraint()"
+description = """
+Prior for the bump duration
+"""
+
+[per_century_trend]
+prior = "Parameterized(Normal(00.0,200.0))"
+constraint = "no_constraint()"
+description = """
+Prior for the per century trend in forcing. 
+"""
+
+
