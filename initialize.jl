@@ -53,7 +53,7 @@ function initialize_EKI(realization, n_ensemble)
     @load "./observations/truth.jld2" y Γ
 
     # generate the EKI 
-    eki = EKP.EnsembleKalmanProcess(initial_ensemble, y, Γ, Inversion(); rng = rng_ekp)
+    eki = EKP.EnsembleKalmanProcess(initial_ensemble, vec(y), Γ, Inversion(); rng = rng_ekp)
 
     # save the EKI
     eki_path = iter_path * "/eki.jld2"
