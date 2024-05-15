@@ -1,9 +1,9 @@
 % output the observation of the ice sheet
 addpath('../functions')
 
-realization = ["001"];
+realization = ["002"];
 iteration   = ["001"];
-member      = ["001"];
+member      = ["001","002", "003","004", "005","006","007","008", "009", "010"];
 
 for ir = 1:length(realization)
 for ii = 1:length(iteration)
