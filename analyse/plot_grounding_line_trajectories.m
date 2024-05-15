@@ -46,7 +46,7 @@ for im = 1:length(member)
 
 gl_pos = ss(ii,im).gl_pos;
 gl_retreat = gl_pos - gl_pos(1);
-plot(ss(ii,im).t, gl_pos, 'color', iter_colmap(ii,:), 'linewidth', 1.5)
+plot(ss(ii,im).t + 1750, gl_pos, 'color', iter_colmap(ii,:), 'linewidth', 1.5)
 
 end %end loop over members
 end %end loop over iterations
@@ -55,6 +55,11 @@ end %end loop over iterations
 obs = csvread('../observations/truth.csv');
 %obs = obs -gl_pos(1); %obs have gl position, not retreat 
 obs_times = csvread('../observations/truth_times.csv');
+obs_times = obs_times;
+obs_err = csvread('../observations/truth_times.csv');
+for i = 1:length(obs_times)
+plot(obs_times(i)*[1,1], obs(i)+obs_err(i)*[-1,1], 'k', 'linewidth', 1.5);
+end
 plot(obs_times, obs, 'ko', 'markersize', 10, 'markerfacecolor', 'k');
 
 xlabel('time');
