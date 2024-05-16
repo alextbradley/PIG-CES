@@ -11,6 +11,7 @@
 
 addpath('../functions/')
 truth_times = [1930,2015]; %times at which obs are made
+truth_times = [180,265]; %times at which obs are made in model time
 x0 = 64; %index along which to take grounding line
 
 data_2015 = load("2015_state.mat");
