@@ -1,7 +1,7 @@
 function observation = observe_ice_sheet(fpath)
 %output the observation of ice sheet retreat from an nc file at fpath
 
-t_obs = [180,270]; %time in the simulations of the observations
+t_obs = csvread('../observations/truth_times.csv');
 x0 = 64; %index along which to take the observation
 
 %check that the file exists
