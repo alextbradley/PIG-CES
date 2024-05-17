@@ -1,7 +1,7 @@
 % Plot the trajectories for a set of simulations. Colour the trajectories by the iteration
 
 addpath('../functions')
-gendata = 1 %flag to generate data, set to 1 to pass thru gendata loop
+gendata = 0 %flag to generate data, set to 1 to pass thru gendata loop. Leave uncommented so that we can check each time!
 x0 = 64;     %where to measure gl
 
 %run spec
@@ -27,10 +27,7 @@ grfrac = ncread(fpath, "grfrac");
 yy = ncread(fpath, 'y');
 gl_pos = nan(size(t));
 for it = 1:length(t)
-gl_pos_now = get_gl_pos(yy,squeeze(grfrac(:,:,it)),x0);
-if ~isempty(gl_pos_now)
-	gl_pos(it) = gl_pos_now;
-end
+gl_pos(it) = get_gl_pos(yy,squeeze(grfrac(:,:,it)),x0);
 end
 
 ss(ir,ii,im).t = t;
