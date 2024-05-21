@@ -20,8 +20,9 @@ plot(obs_times, obs, 'ko', 'markersize', 10, 'markerfacecolor', 'k');
 
 end %end obsflag
 
-xlabel('time');
-ylabel('grounding line position')
-ylim([-3,-2.5]*1e5)
+ax.XLabel.String ='time';
+ax.YLabel.String = 'gl position'
+ax.YLim = [-3,-2.5]*1e5;
+ax.XLim = [1750, 2050];
 
 

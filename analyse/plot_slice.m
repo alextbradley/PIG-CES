@@ -12,6 +12,7 @@ x1 = 64; y1 = 60;
 for im = 1:length(member)
 
 figure(im); 
-fig = plot_slice_function(realization, iteration, member(im), [x0,x1], [y0,y1])
+ax = gca;
+plot_slice_function(realization, iteration, member(im), [x0,x1], [y0,y1], ax)
 
 end
