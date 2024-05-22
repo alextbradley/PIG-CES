@@ -21,7 +21,7 @@ plot(obs_times, obs, 'ko', 'markersize', 10, 'markerfacecolor', 'k');
 end %end obsflag
 
 ax.XLabel.String ='time';
-ax.YLabel.String = 'gl position'
+ax.YLabel.String = 'gl position';
 ax.YLim = [-3,-2.5]*1e5;
 ax.XLim = [1750, 2050];
 
