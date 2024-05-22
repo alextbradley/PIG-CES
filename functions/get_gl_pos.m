@@ -7,7 +7,7 @@ float_at_gl_gridcell = grfrac_slice(idx);
 if ~isempty(idx) %sometimes if fully deglaciates, we don't get a grounded point. In this case return a nan
 gl_pos = yy(idx); %first grid point that is fully floating
 else
-gl_pos = nan;
+gl_pos = yy(end); %take the last point 
 end
 
 %interpolate???
