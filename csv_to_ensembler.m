@@ -34,7 +34,7 @@ end
 % loop over the entries of params and print
 for i= 1:length(params)
     fprintf('      - weertman_c_prefactor: %.4f \n',params(i,1) )
-    fprintf('        ungrounded_weertmanC_prefactor: %.4f \n',params(i,1) )
+    fprintf('        ungrounded_weertmanC_prefactor: %.4f \n',params(i,2) )
     fprintf('        glen_a_ref_prefactor: %.4f \n',params(i,3) )
     fprintf('        melt_rate_prefactor_exponent: %.4f \n',params(i,4) )
     fprintf('        per_century_trend: %.4f \n',params(i,5) )
