@@ -4,7 +4,7 @@ grfrac_slice = grfrac(x0,:);
 idx = find(grfrac_slice == 1, 1, 'first'); %first fully grounded
 float_at_gl_gridcell = grfrac_slice(idx);
 
-if ~isempty(idx) %sometimes if fully deglaciates, we don't get a grounded point. In this case return a nan
+if ~isempty(idx) %sometimes when fully deglaciates, we dont get a grounded point. In this case return a nan
 gl_pos = yy(idx); %first grid point that is fully floating
 else
 gl_pos = yy(end); %take the last point 

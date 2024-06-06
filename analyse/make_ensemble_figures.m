@@ -12,18 +12,25 @@
 % ./figures/realizationXXX_iterationXXX_slices.pdf
 %
 
-realization = ["001","002", "003","004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015"]; %this shouldn't change, we'll figure them out as we go which iterations are available
+plot_trajectories = 1; %make a 5 x 4 plot of trajectories (one panel for each realization of forcing)
+plot_slices 	  = 0; %make plots of slices for each realization and each iteration
+
+realization = ["001","002", "003","004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020"]; %this shouldn't change, we'll figure them out as we go which iterations are available
 
 iteration = ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010"];
-colmap = parula(length(iteration)); %iterations
 
-if 1 
+member = ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010"];
+colmap = parula(length(iteration)); %iterations
+x0 = 64;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if plot_trajectories
 
 fig = figure(1);
 
 is_worth_slicing = zeros(length(realization), length(iteration)); %boolean array to decide which slices to output 
 for ir = 1:length(realization)
-ax(ir) = subplot(3,5,ir); hold on; box on
+ax(ir) = subplot(4,5,ir); hold on; box on
 title(strcat("realization ", realization(ir)))
 ir
 
@@ -45,9 +52,10 @@ fig = gcf;
 fig.Position(3:4) = [1600, 800];
 exportgraphics(gcf, './ensemble_figures/trajectories.pdf')
 
-end
+end %end flag
 
 %%%%%%%%%%%%%%%%%% %individual slices %%%%%%%%%%%%%%%%%%%%%
+if plot_slices
 members = ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010"];
 % specify where to take the slice
 x0 = 64; y0 = 20;
@@ -73,5 +81,7 @@ s = suptitle(strcat("realization", realization(ir), ", iteration", iteration(ii)
 end %end is worth slicing flag
 
 exportgraphics(fig(ir), figname);
+close(fig(ir))
 end %end loop over iterations
 end %end loop over realizations 
+end %end if plot_slices

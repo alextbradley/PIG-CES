@@ -1,6 +1,10 @@
-function plot_trajectories_by_iteration(realization, max_iter,members)
+function plot_ice_volume_by_iteration(realization, max_iter,members,mode)
+% make a plot of the ice mass as a function of time for a given realization
+% mode specifies the type of plot as follows:
+% 'volume': ice grounded volume
+% 'vaf': ice volume above floatation
 
-x0 = 64;
+
 realization = sprintf('%03d', realization);
 iteration = strings(1,max_iter);
 for i = 1:max_iter
@@ -21,7 +25,7 @@ for ii = 1:length(iteration)
         if ii == length(iteration)
                 obsflag = 1;
         end
-        [ss,p]= plot_grounding_line_trajectory_function(realization, iteration(ii), member, x0, col, obsflag, ax);
+        [ss,p]= plot_ice_volume_trajectory_function(realization, iteration(ii), member, col, obsflag, ax, mode);
 
-	
 end
+

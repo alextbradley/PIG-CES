@@ -4,7 +4,7 @@ function [ss,p] = plot_grounding_line_trajectory_function(realization, iteration
 ss = get_grounding_line_trajectories(realization, iteration, members, x0);
 
 for im = 1:length(members)
-	p(im) = plot(ax, ss(im).t + 1750, ss(im).gl_pos, 'color', col, 'linewidth', 1.5);
+	p(im) = plot(ax, ss(im).t + 1750, ss(im).gl_pos, 'color', col, 'linewidth', 1.5); 
 end %end loop over members
 
 %add the obs
