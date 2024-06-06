@@ -41,6 +41,12 @@ function initialize_EKI(realization, n_ensemble)
     for member = 1:n_ensemble
         member_padded = @sprintf("%03d", member);
         mkdir(iter_path * "/member" * member_padded)
+
+        #write a tmp file so that git knows about folder structure
+        path = iter_path*"/member" * member_padded*"/tmp.txt"
+        open(path, "w") do file
+            write(file, "temp file\n")
+        end
     end
 
     # save the parameter values in txt format

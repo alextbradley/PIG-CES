@@ -17,7 +17,7 @@ fpath = strcat("/data/icesheet_output/aleey/wavi/ARCHER2_EKI/realization",realiz
 output = observe_ice_sheet(fpath)
 
 %save in the appropriate place as a csv
-if ~any(isnan(output)) %if we don't find the nc file, we output a nan
+if ~any(isnan(output)) %if we dont find the nc file, we output a nan
 outfolder = strcat("/data/hpcdata/users/aleey/projects/AttributionRealWorld/manual-EKI/realization", realization(ir), "/iteration" , iteration(ii), "/member", member(im));
 
 if ~isdir(outfolder)
