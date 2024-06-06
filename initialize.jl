@@ -62,6 +62,6 @@ function initialize_EKI(realization, n_ensemble)
     return nothing
 end
 
-realization = 1:20
-n_ensemble  = 10
-initialize_EKI.(realization, n_ensemble)
+#realization = 1:20
+#n_ensemble  = 10
+#initialize_EKI.(realization, n_ensemble)
