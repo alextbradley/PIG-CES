@@ -36,11 +36,11 @@ gl_pos_1930 = get_gl_pos(yy,grfrac_1930,x0);
 data = [gl_pos_1930, gl_pos_2015, volume_2015];
 data_normalized = [0,0,0];
 
-noise_actual = [3000,3000,1e12]; %stds in these obs
+noise_actual = [4500,4500,1e13]; %stds in these obs
 noise = ones(size(data));
 
 writematrix(data, 'truth_actual.csv');
 writematrix(data_normalized, 'truth.csv')
 writematrix(noise, 'noise.csv');
-writematrix(noise_actual, 'noise_actual.csv');
+writematrix(noise_actual, 'noise.csv');
 writematrix(truth_times, 'truth_times.csv');
