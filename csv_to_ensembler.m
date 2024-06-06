@@ -1,7 +1,7 @@
 % output a set of params.csv files in the correct format to be used by the
 % ensembler
 
-realizations = 11:15;
+realizations = 26:30;
 iterations   = 1;
 
 params = [];

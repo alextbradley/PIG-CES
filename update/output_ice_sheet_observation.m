@@ -1,8 +1,10 @@
 % output the observation of the ice sheet
 addpath('../functions')
 
-realization = ["002"];
-iteration   = ["001"];
+
+realization = ["011", "012", "013", "014", "015", "016", "017", "018", "019", "020"];
+%realization = ["003", "004", "007"];
+iteration   = ["002"];
 member      = ["001","002", "003","004", "005","006","007","008", "009", "010"];
 
 for ir = 1:length(realization)
@@ -12,10 +14,10 @@ for im = 1:length(member)
 fpath = strcat("/data/icesheet_output/aleey/wavi/ARCHER2_EKI/realization",realization(ir), "/EKI_EKI-", realization(ir),"-", iteration(ii),"-", member(im), "/run/outfile.nc");
 
 %generate the observation
-output = observe_ice_sheet(fpath);
+output = observe_ice_sheet(fpath)
 
 %save in the appropriate place as a csv
-if ~isnan(output) %if we don't find the nc file, we output a nan
+if ~any(isnan(output)) %if we don't find the nc file, we output a nan
 outfolder = strcat("/data/hpcdata/users/aleey/projects/AttributionRealWorld/manual-EKI/realization", realization(ir), "/iteration" , iteration(ii), "/member", member(im));
 
 if ~isdir(outfolder)

@@ -23,5 +23,5 @@ for ii = 1:length(iteration)
         end
         [ss,p]= plot_grounding_line_trajectory_function(realization, iteration(ii), member, x0, col, obsflag, ax);
 
-
+	
 end
