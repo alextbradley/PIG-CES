@@ -13,10 +13,9 @@ function initialize_EKI(realization, n_ensemble)
         return
     end
 
-
     # check that this folder does not already exist. If so, terminal and do nothing
     padded_realization = @sprintf("%03d", realization);
-    folder_path = "./realization" * string(padded_realization)
+    folder_path = "./model-inputs-and-outputs/realization" * string(padded_realization)
     iter_path   = folder_path * "/iteration001"
     if isdir(folder_path)
         println("Folder exists: ", folder_path, ", terminating")
