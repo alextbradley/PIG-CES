@@ -9,10 +9,10 @@ end %end loop over members
 
 %add the obs
 if obsflag
-obs = csvread('../observations/truth.csv');
+obs = csvread('../observations/truth_actual.csv');
 obs_times = csvread('../observations/truth_times.csv');
 obs_times = obs_times+1750;
-obs_err = csvread('../observations/noise.csv');
+obs_err = csvread('../observations/noise_actual.csv');
 for i = 1:length(obs_times)
 plot(obs_times(i)*[1,1], obs(i)+obs_err(i)*[-1,1], 'k', 'linewidth', 1.5);
 end
