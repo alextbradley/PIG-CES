@@ -2,8 +2,8 @@ function observation = observe_ice_sheet(fpath)
 %output the observation of ice sheet retreat from an nc file at fpath
 
 t_obs = csvread('../observations/truth_times.csv');
-truth_actual = csvread("../observations/truth_actual.csv")
-noise_actual = csvread("../observations/noise_actual.csv")
+truth_actual = csvread("../observations/truth_actual.csv");
+noise_actual = csvread("../observations/noise_actual.csv");
 x0 = 64; %index along which to take the observation
 
 %check that the file exists
