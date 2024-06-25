@@ -1,7 +1,7 @@
 function ss = get_ice_volume_trajectories(realization, iteration, members)
 %return the data for a single iteration
 
-addpath('../functions')
+addpath('../../functions')
 ss = struct;
 dx = 3e3;
 dy = 3e3;

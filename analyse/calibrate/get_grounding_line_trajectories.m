@@ -1,7 +1,7 @@
 function ss = get_grounding_line_trajectories(realization, iteration, members, x0)
 %return the data for a single iteration
 
-addpath('../functions')
+addpath('../../functions')
 ss = struct;
 for im = 1:length(members)
 fpath = strcat("/data/icesheet_output/aleey/wavi/ARCHER2_EKI/realization",realization, "/EKI_EKI-", realization,"-", iteration,"-", members(im), "/run/outfile.nc");

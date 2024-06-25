@@ -10,11 +10,11 @@ end %end loop over members
 
 %add the obs
 if obsflag
-	obs = csvread('../observations/truth_actual.csv');
+	obs = csvread('../../observations/truth_actual.csv');
 	obs = obs(3);
-	obs_times = csvread('../observations/truth_times.csv');
+	obs_times = csvread('../../observations/truth_times.csv');
 	obs_times = obs_times(3);
-	obs_err = csvread('../observations/noise_actual.csv');
+	obs_err = csvread('../../observations/noise_actual.csv');
 	obs_err = obs_err(3);
 	obs_times = obs_times+1750;
 	
