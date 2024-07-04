@@ -55,7 +55,7 @@ mcmc_histogram                <- 1
 # prior info 
 #
 dimensional_prior_mean <- c(1.0, 1.0, 1.0, 0.0,0.0 ,200.0, 5.0);
-dimensional_prior_sd   <- 10*c(0.3, 0.3, 0.3, 1.2, 200.0, 100.0, 2.5)
+dimensional_prior_sd   <- c(0.3, 0.3, 0.3, 1.2, 200.0, 100.0, 2.5)
 input_headers <- c("weertman_c_prefactor", "ungrounded_weertmanC_prefactor" ,"glen_a_ref_prefactor",
                    "melt_rate_prefactor_exponent","per_century_trend","bump_amplitude","bump_duration")
 
@@ -63,8 +63,16 @@ input_headers <- c("weertman_c_prefactor", "ungrounded_weertmanC_prefactor" ,"gl
 # obs info
 #
 dimensional_observation <- 0 #dimensional value of actual (set to be relative to the truth)
-dimensional_error_cov <- 1 #error covariance 
+dimensional_error_cov   <- 1 #error covariance 
 
+emulate_sample <- function(realization,iterations,members,verbose,
+                           training_iterations,method,nugget_est,kernel_type,max_eval,alpha,
+                           N_steps,
+                           leave_one_out_validation_plot,mcmc_traceplot,mcmc_histogram,
+                           dimensional_prior_mean,dimensional_prior_sd,input_headers,
+                           dimensional_observation,dimensional_error_cov){
+
+                           
 ###########################################################
 ################ get the model results ####################
 ###########################################################
@@ -429,3 +437,13 @@ for (i in 1:7) {
 } #end loop over variables
 grid.arrange(grobs = plot_list, ncol = 3)
 }
+return(list(dimensional_mcmc_data = dimensional_mcmc_data))
+
+}
+
+emulate_sample_data <- emulate_sample(realization,iterations,members,verbose,
+                                       training_iterations,method,nugget_est,kernel_type,max_eval,alpha,
+                                       N_steps,
+                                       leave_one_out_validation_plot,mcmc_traceplot,mcmc_histogram,
+                                       dimensional_prior_mean,dimensional_prior_sd,input_headers,
+                                       dimensional_observation,dimensional_error_cov)
