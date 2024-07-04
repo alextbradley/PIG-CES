@@ -135,7 +135,7 @@ print(paste("proportion emulated within 95% CI for 2015:", prop_emulator_2015))
 
 
 data_2015 <- data.frame(
-  x = normalized_output[,1] ,  #actual output values
+  x = normalized_output[,2] ,  #actual output values
   y = pred_mean_2015,          # model output
   y_lower = pred_l95_2015 ,   # upper error bars
   y_upper = pred_u95_2015)    #lower error bars
