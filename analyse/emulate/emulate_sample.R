@@ -24,7 +24,7 @@ setwd("/Users/user/Dropbox/BAS_Postdoc/Projects/AttributionRealWorld/manual-EKI/
 #
 # specify model results to use
 #
-realization <- 30
+realization <- 29
 iterations  <- 1:5
 members     <- 1:20
 verbose     <- 0
@@ -32,7 +32,7 @@ verbose     <- 0
 #
 # emulator parameters
 #
-training_iterations <- 1:5 #which iterations to train on
+training_iterations <- 4:5 #which iterations to train on
 method              <- 'post_mode'
 nugget_est          <- F
 kernel_type         <- 'matern_5_2'
@@ -42,13 +42,13 @@ alpha               <- NA  #alpha value for exponential kernels
 #
 # mcmc parameters
 #
-N_steps <- 100000
+N_steps <- 150000
 
 #
 # specify plots
 #
 leave_one_out_validation_plot <- 0
-mcmc_traceplot                <- 0
+mcmc_traceplot                <- 1
 mcmc_histogram                <- 1
 
 #
@@ -58,6 +58,7 @@ dimensional_prior_mean <- c(1.0, 1.0, 1.0, 0.0,0.0 ,200.0, 5.0);
 dimensional_prior_sd   <- c(0.3, 0.3, 0.3, 1.2, 200.0, 100.0, 2.5)
 input_headers <- c("weertman_c_prefactor", "ungrounded_weertmanC_prefactor" ,"glen_a_ref_prefactor",
                    "melt_rate_prefactor_exponent","per_century_trend","bump_amplitude","bump_duration")
+print("!!!!! warning prior is updated in the code to equal the final iteration mean and sd !!!! ")
 
 #
 # obs info
@@ -290,10 +291,19 @@ model <- rgasp(design = normalized_model_input,
 # get initial guess from final iteration
 #
 indices <- which(meta_data[,1] == max(meta_data[,1])); #indices corresponding to final iteration
+dimensional_final_iteration_parameters <- dimensional_model_input[indices,]
 normalized_final_iteration_parameters <- normalized_model_input[indices,]
 normalized_theta0 <- apply(normalized_final_iteration_parameters, 2, mean) 
 normalized_naive_posterior_mean <- apply(normalized_final_iteration_parameters, 2, mean)
 normalized_naive_posterior_sd <- apply(normalized_final_iteration_parameters, 2, sd)
+
+#
+# update the prior from earlier?
+#
+dimensional_prior_mean <- apply(dimensional_final_iteration_parameters, 2, mean) 
+dimensional_prior_sd   <- apply(dimensional_final_iteration_parameters, 2, sd) 
+normalized_prior_mean <- (dimensional_prior_mean - dimensional_model_input_mean)/dimensional_model_input_sd 
+normalized_prior_sd   <- dimensional_prior_sd/dimensional_model_input_sd
 
 #
 #compute martix C, which is based on the final iteration of the EKS and set the update size
@@ -314,8 +324,8 @@ normalized_theta_values[1,] <- normalized_theta0
 normalized_theta_current <- normalized_theta0
 
 #shift the first entry away
-update_size <- mvrnorm(1, c(0,0,0,0,0,0,0), C) #draw from multivariable random normal with zero mean
-normalized_theta_current <- normalized_theta_current + 2*update_size
+#update_size <- mvrnorm(1, c(0,0,0,0,0,0,0), C) #draw from multivariable random normal with zero mean
+#normalized_theta_current <- normalized_theta_current + 2*update_size
 
 #
 # perform steps
@@ -327,14 +337,18 @@ for (i in 1:(N_steps-1)) {
     normalized_theta_trial <- normalized_theta_current + update_size
 
     #compute likelihoods
-    likelihood_term_trial   = exp(-(normalized_actual - predict(model,t(normalized_theta_trial))$mean )^2 / 2 /normalized_error_cov^2)
-    likelihood_term_current = exp(-(normalized_actual - predict(model,t(normalized_theta_current))$mean )^2 / 2 /normalized_error_cov^2)
+    norm_gp_trial =  log(predict(model,t(normalized_theta_trial))$upper95 - predict(model,t(normalized_theta_trial))$lower95)/2
+    norm_gp_current =  log(predict(model,t(normalized_theta_current))$upper95 - predict(model,t(normalized_theta_current))$lower95)/2
+    likelihood_term_trial   = exp(-(normalized_actual - predict(model,t(normalized_theta_trial))$mean )^2 / 2 /normalized_error_cov^2 - norm_gp_trial)
+    likelihood_term_current = exp(-(normalized_actual - predict(model,t(normalized_theta_current))$mean )^2 / 2 /normalized_error_cov^2 - norm_gp_current)
     
     #compute prior terms
     normalized_prior_diff_trial   <-  matrix(normalized_theta_trial - normalized_prior_mean, 1, 7) 
     normalized_prior_diff_current <-  matrix(normalized_theta_current - normalized_prior_mean, 1, 7) 
     prior_term_trial    <- exp(- normalized_prior_diff_trial    %*% inv_prior_covariance %*% t(normalized_prior_diff_trial) / 2);
     prior_term_current  <- exp(- normalized_prior_diff_current  %*% inv_prior_covariance %*% t(normalized_prior_diff_current) / 2);
+    #prior_term_trial <- 1
+    #prior_term_current <- 1
     
     #likelihood ratio
     a <- min(c(1, (likelihood_term_trial*prior_term_trial / (likelihood_term_current*prior_term_current)) ));    
@@ -421,14 +435,14 @@ for (i in 1:7) {
   
   #make plot
   xlims <- matrix(c(0.25, 0.25, 0.25, -1, -500, -300,0,
-                    1.75, 1.75, 1.75,  1, 500,  300, 10), nrow = 7, ncol = 2)
+                    1.75, 1.75, 1.75,  1, 500,  500, 10), nrow = 7, ncol = 2)
   
   p <- ggplot(dimensional_mcmc_data, aes_string(x = colnames(dimensional_mcmc_data)[i])) +
     geom_histogram(aes(y = after_stat(density)), binwidth = (max( dimensional_mcmc_data[,i]) - min( dimensional_mcmc_data[,i]))/nbars, fill = "blue", alpha = 0.7) +
     geom_density(alpha = 1, color = "black", linewidth =0.75) +
     #geom_line(aes(x = xx, y = yy), color = "black", linetype = "dashed") +
     theme_minimal() +
-    xlim(xlims[i,])
+    xlim(xlims[i,])+
     ggtitle(input_headers[i]) 
   p <- p + geom_line(data = data_prior, aes(x = x, y = y), color = "black", linetype = "dashed", linewidth = 0.75) 
   p <- p + geom_line(data = data_naive_posterior, aes(x = x, y = y), color = "red", linetype = "dashed", linewidth = 0.75)
