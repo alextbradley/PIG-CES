@@ -14,6 +14,7 @@ library(ggplot2)
 library(RColorBrewer)
 library(dplyr) #for filtering data frames
 library(MASS)
+library(gridExtra)
 
 
 #
@@ -24,7 +25,7 @@ setwd("/Users/user/Dropbox/BAS_Postdoc/Projects/AttributionRealWorld/manual-EKI/
 #
 # specify model results to use
 #
-realization <- 29
+realization <- 26
 iterations  <- 1:5
 members     <- 1:20
 verbose     <- 0
@@ -32,7 +33,7 @@ verbose     <- 0
 #
 # emulator parameters
 #
-training_iterations <- 4:5 #which iterations to train on
+training_iterations <- 1:5 #which iterations to train on
 method              <- 'post_mode'
 nugget_est          <- F
 kernel_type         <- 'matern_5_2'
@@ -42,7 +43,7 @@ alpha               <- NA  #alpha value for exponential kernels
 #
 # mcmc parameters
 #
-N_steps <- 150000
+N_steps <- 100000
 
 #
 # specify plots
@@ -58,7 +59,7 @@ dimensional_prior_mean <- c(1.0, 1.0, 1.0, 0.0,0.0 ,200.0, 5.0);
 dimensional_prior_sd   <- c(0.3, 0.3, 0.3, 1.2, 200.0, 100.0, 2.5)
 input_headers <- c("weertman_c_prefactor", "ungrounded_weertmanC_prefactor" ,"glen_a_ref_prefactor",
                    "melt_rate_prefactor_exponent","per_century_trend","bump_amplitude","bump_duration")
-print("!!!!! warning prior is updated in the code to equal the final iteration mean and sd !!!! ")
+#print("!!!!! warning: prior is updated in the code to equal the final iteration mean and sd !!!! ")
 
 #
 # obs info
@@ -66,12 +67,12 @@ print("!!!!! warning prior is updated in the code to equal the final iteration m
 dimensional_observation <- 0 #dimensional value of actual (set to be relative to the truth)
 dimensional_error_cov   <- 1 #error covariance 
 
-emulate_sample <- function(realization,iterations,members,verbose,
-                           training_iterations,method,nugget_est,kernel_type,max_eval,alpha,
-                           N_steps,
-                           leave_one_out_validation_plot,mcmc_traceplot,mcmc_histogram,
-                           dimensional_prior_mean,dimensional_prior_sd,input_headers,
-                           dimensional_observation,dimensional_error_cov){
+#emulate_sample <- function(realization,iterations,members,verbose,
+#                           training_iterations,method,nugget_est,kernel_type,max_eval,alpha,
+#                           N_steps,
+#                           leave_one_out_validation_plot,mcmc_traceplot,mcmc_histogram,
+#                           dimensional_prior_mean,dimensional_prior_sd,input_headers,
+#                           dimensional_observation,dimensional_error_cov){
 
                            
 ###########################################################
@@ -237,7 +238,7 @@ outrange_color = rgb(228/255,128/255,111/255)
 rmse_fn <- function(actual, predicted) {
 sqrt(mean((actual - predicted)^2))
 }
-rmse <- rmse_fn(data$y, data$x)
+rmse <- rmse_fn(LOO_data$y, LOO_data$x)
 
 #make the plot of modelled versus emulated
 P <- ggplot() + 
@@ -300,10 +301,10 @@ normalized_naive_posterior_sd <- apply(normalized_final_iteration_parameters, 2,
 #
 # update the prior from earlier?
 #
-dimensional_prior_mean <- apply(dimensional_final_iteration_parameters, 2, mean) 
-dimensional_prior_sd   <- apply(dimensional_final_iteration_parameters, 2, sd) 
-normalized_prior_mean <- (dimensional_prior_mean - dimensional_model_input_mean)/dimensional_model_input_sd 
-normalized_prior_sd   <- dimensional_prior_sd/dimensional_model_input_sd
+#dimensional_prior_mean <- apply(dimensional_final_iteration_parameters, 2, mean) 
+#dimensional_prior_sd   <- apply(dimensional_final_iteration_parameters, 2, sd) 
+#normalized_prior_mean <- (dimensional_prior_mean - dimensional_model_input_mean)/dimensional_model_input_sd 
+#normalized_prior_sd   <- dimensional_prior_sd/dimensional_model_input_sd
 
 #
 #compute martix C, which is based on the final iteration of the EKS and set the update size
@@ -337,14 +338,16 @@ for (i in 1:(N_steps-1)) {
     normalized_theta_trial <- normalized_theta_current + update_size
 
     #compute likelihoods
-    norm_gp_trial =  log(predict(model,t(normalized_theta_trial))$upper95 - predict(model,t(normalized_theta_trial))$lower95)/2
-    norm_gp_current =  log(predict(model,t(normalized_theta_current))$upper95 - predict(model,t(normalized_theta_current))$lower95)/2
-    likelihood_term_trial   = exp(-(normalized_actual - predict(model,t(normalized_theta_trial))$mean )^2 / 2 /normalized_error_cov^2 - norm_gp_trial)
-    likelihood_term_current = exp(-(normalized_actual - predict(model,t(normalized_theta_current))$mean )^2 / 2 /normalized_error_cov^2 - norm_gp_current)
+    uncertainty_trial <- predict(model,t(normalized_theta_trial))$upper95 - predict(model,t(normalized_theta_trial))$lower95
+    uncertainty_current <- predict(model,t(normalized_theta_current))$upper95 - predict(model,t(normalized_theta_current))$lower95
+    
+    likelihood_term_trial   = exp(-(normalized_actual - predict(model,t(normalized_theta_trial))$mean )^2 / 2 /(normalized_error_cov+uncertainty_trial)^2 - log(uncertainty_trial)/2)
+    likelihood_term_current = exp(-(normalized_actual - predict(model,t(normalized_theta_current))$mean )^2 / 2 /(normalized_error_cov+uncertainty_current)^2 - log(uncertainty_current)/2)
     
     #compute prior terms
     normalized_prior_diff_trial   <-  matrix(normalized_theta_trial - normalized_prior_mean, 1, 7) 
     normalized_prior_diff_current <-  matrix(normalized_theta_current - normalized_prior_mean, 1, 7) 
+    
     prior_term_trial    <- exp(- normalized_prior_diff_trial    %*% inv_prior_covariance %*% t(normalized_prior_diff_trial) / 2);
     prior_term_current  <- exp(- normalized_prior_diff_current  %*% inv_prior_covariance %*% t(normalized_prior_diff_current) / 2);
     #prior_term_trial <- 1
@@ -415,7 +418,7 @@ p <- grid.arrange(grobs = plot_list, ncol = 1)
 #
 if (mcmc_histogram){
 plot_list <- list()
-nbars <- 30; #number of histogram bars
+nbars <- 200; #number of histogram bars
 
 for (i in 1:7) {
   
@@ -434,8 +437,8 @@ for (i in 1:7) {
   
   
   #make plot
-  xlims <- matrix(c(0.25, 0.25, 0.25, -1, -500, -300,0,
-                    1.75, 1.75, 1.75,  1, 500,  500, 10), nrow = 7, ncol = 2)
+  xlims <- matrix(c(0.5, 0.5, 0.5, 0, -200, 0,0,
+                    1.25, 2.0, 2.0,  1, 600,  500, 8), nrow = 7, ncol = 2)
   
   p <- ggplot(dimensional_mcmc_data, aes_string(x = colnames(dimensional_mcmc_data)[i])) +
     geom_histogram(aes(y = after_stat(density)), binwidth = (max( dimensional_mcmc_data[,i]) - min( dimensional_mcmc_data[,i]))/nbars, fill = "blue", alpha = 0.7) +
@@ -451,13 +454,78 @@ for (i in 1:7) {
 } #end loop over variables
 grid.arrange(grobs = plot_list, ncol = 3)
 }
-return(list(dimensional_mcmc_data = dimensional_mcmc_data))
 
+###########################################################
+## plot emulator error as a function of model parameters ##
+###########################################################
+# plot the emulated model output as a function of input parameter for each of the parameters, at the naive posterior mean
+np <- 1000 #number of x points
+dimensionless_prior_mean <- normalized_prior_mean
+dimensionless_prior_sd <- normalized_prior_sd
+normalized_xx <- matrix(NaN, nrow = np, ncol= length(dimensional_prior_mean))
+dimensional_xx <- matrix(NaN, nrow = np, ncol= length(dimensional_prior_mean))
+normalized_yy_mean <- matrix(NaN, nrow = np, ncol= length(dimensional_prior_mean))
+normalized_yy_u95 <- matrix(NaN, nrow = np, ncol= length(dimensional_prior_mean))
+normalized_yy_l95 <- matrix(NaN, nrow = np, ncol= length(dimensional_prior_mean))
+
+
+for (i in 1:7){
+  normalized_xx[,i] <- seq(from = (dimensionless_prior_mean[i] - 3*dimensionless_prior_sd[i]), to = (dimensionless_prior_mean[i] + 3*dimensionless_prior_sd[i]) , length.out = np)
+  dimensional_xx[,i] <- (normalized_xx[,i]*dimensional_model_input_sd[i] + dimensional_model_input_mean[i])
+  test_values <- matrix(rep(normalized_naive_posterior_mean, times = np), nrow = np, ncol = 7, byrow = TRUE) #test values at naive posterior mean everywhere
+  test_values[,i] <- normalized_xx[,i] #replace the ith column with normalized xx values
+  
+  #test the model on these values
+  tmp <- predict(model,test_values)
+  
+  normalized_yy_mean[,i] <- tmp$mean
+  normalized_yy_u95[,i] <- tmp$upper95
+  normalized_yy_l95[,i] <- tmp$lower95
 }
 
-emulate_sample_data <- emulate_sample(realization,iterations,members,verbose,
-                                       training_iterations,method,nugget_est,kernel_type,max_eval,alpha,
-                                       N_steps,
-                                       leave_one_out_validation_plot,mcmc_traceplot,mcmc_histogram,
-                                       dimensional_prior_mean,dimensional_prior_sd,input_headers,
-                                       dimensional_observation,dimensional_error_cov)
+normalized_xx <- data.frame(normalized_xx)
+dimensional_xx <- data.frame(dimensional_xx)
+normalized_yy_mean <- data.frame(normalized_yy_mean)
+normalized_yy_l95 <- data.frame(normalized_yy_l95)
+normalized_yy_u95 <- data.frame(normalized_yy_u95)
+
+plot_list <- list()
+
+for (i in 1:7) {
+  # Create a data frame for the current column
+  df <- data.frame(
+    x = dimensional_xx[[i]],
+    y = normalized_yy_mean[[i]] - normalized_actual,
+    ymin = normalized_yy_l95[[i]] - normalized_actual,
+    ymax = normalized_yy_u95[[i]] - normalized_actual
+  )
+  
+  
+  # Create the plot
+  p <- ggplot(df, aes(x = x, y = y)) +
+    geom_line() +
+    geom_ribbon(aes(ymin = ymin, ymax = ymax), alpha = 0.2) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_vline(xintercept = dimensional_naive_posterior_mean[i], linetype = "dashed") +
+    
+    ylim(-.1, .1) +
+    xlim(xlims[i,]) + 
+    labs(x = input_headers[i], y = "emu error") +
+    theme_minimal()
+  
+  # Add the plot to the list
+  plot_list[[i]] <- p
+}
+
+grid.arrange(grobs = plot_list, ncol = 3, nrow = 3)
+
+#return(list(dimensional_mcmc_data = dimensional_mcmc_data, model = model))
+
+#}
+
+#emulate_sample_data <- emulate_sample(realization,iterations,members,verbose,
+#                                       training_iterations,method,nugget_est,kernel_type,max_eval,alpha,
+#                                       N_steps,
+#                                       leave_one_out_validation_plot,mcmc_traceplot,mcmc_histogram,
+#                                       dimensional_prior_mean,dimensional_prior_sd,input_headers,
+#                                       dimensional_observation,dimensional_error_cov)
