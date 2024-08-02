@@ -14,9 +14,10 @@
 %
 
 %specify plots
-scatter_error_and_parameter_colour_by_iteration = 1;
-plot_grv_and_ctsglpos_trajectories              = 1;
+scatter_error_and_parameter_colour_by_iteration = 0;
+plot_grv_and_ctsglpos_trajectories              = 0;
 plot_error_correlations                         = 0;
+plot_random_forcing_anomaly                     = 1;
 
 
 gendata = 1
@@ -24,7 +25,7 @@ gendata = 1
 addpath('../../functions/');
 
 %specify ensemble
-realization = 28;
+realization = 23;
 iterations  = 1:5;
 members     = 1:20;
 
@@ -74,13 +75,13 @@ if gendata
             model_output(ii, im).dimensionless_grv_2015_error = outputs(3);
 
             %time series bits
-            if ((realization <= 30) || (realization >= 26))
+            if ((realization <= 30) && (realization >= 26))
                 model_output(ii,im).time = trajectories.time + start_year;
             else
                 model_output(ii,im).time = trajectories.t + start_year;
             end
 
-            model_output(ii,im).grv = trajectories.grv; %this will be changed to grv
+            model_output(ii,im).grv = trajectories.grv; 
             model_output(ii,im).gl_pos_discrete = trajectories.gl_pos_discrete;
             model_output(ii,im).gl_pos_cts = trajectories.gl_pos_cts;
 
@@ -150,6 +151,7 @@ if plot_grv_and_ctsglpos_trajectories
         hold(ax(i), "on");
         box(ax(i), "on");
         ax(i).FontSize = fontsize;
+        ax(i).FontName = 'GillSans';
     end
 
     for ii = 1:length(iterations)
@@ -178,8 +180,8 @@ if plot_grv_and_ctsglpos_trajectories
 
 
     %tidy stuff
-    ax(1).XLabel.String = "time";
-    ax(2).XLabel.String = "time";
+    ax(1).XLabel.String = "year";
+    ax(2).XLabel.String = "year";
 
     ax(1).YLabel.String = "grounding line position";
     ax(2).YLabel.String = "grounded volume";
@@ -237,3 +239,24 @@ if plot_error_correlations
     plot(xx, cfs(1) + cfs(2)*xx, 'k--', 'linewidth', 1.5)
 
 end
+
+%% plot_random_forcing_anomaly
+if plot_random_forcing_anomaly
+
+    fpath = strcat("../../model-inputs-and-outputs/realization", padded_realization, "/realization.mat");
+    rf = load(fpath);
+    figure(numplot); clf; hold on;
+    plot(rf.time + start_year, rf.pycnocline_center, 'k', 'linewidth', 1.5); 
+    hold on
+    plot([min(rf.time), max(rf.time)]+start_year, [-500,-500], 'k--', 'linewidth', 1.5)
+    ax = gca;
+    ax.FontSize = 14;
+    ax.YLim = [-650, -350];
+    box(ax, 'on');
+    ax.XLabel.String = 'year';
+    ax.YLabel.String = 'pycnocline center depth (m)';
+    ax.FontName = 'GillSans';
+
+
+end
+
