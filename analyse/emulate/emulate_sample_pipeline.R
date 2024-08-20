@@ -98,7 +98,7 @@ source("meff.R")
 final_iteration_parameters <- model_input[which(meta_data[,1] == max(meta_data[,1])),]
 init_sample                <- colMeans(final_iteration_parameters)
 
-n_steps <- 100000
+n_steps <- 200000
 n_burn  <- 1000
 
 source("run_mcmc.R")
