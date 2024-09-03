@@ -14,8 +14,8 @@
 %
 
 %specify plots
-scatter_error_and_parameter_colour_by_iteration = 0;
-plot_grv_and_ctsglpos_trajectories              = 0;
+scatter_error_and_parameter_colour_by_iteration = 1;
+plot_grv_and_ctsglpos_trajectories              = 1;
 plot_error_correlations                         = 0;
 plot_random_forcing_anomaly                     = 1;
 
@@ -25,7 +25,7 @@ gendata = 1
 addpath('../../functions/');
 
 %specify ensemble
-realization = 23;
+realization = 40;
 iterations  = 1:5;
 members     = 1:20;
 
@@ -105,29 +105,31 @@ if scatter_error_and_parameter_colour_by_iteration
     sz = 30; %point size
 
     figure(numplot); clf;
-    for i = 1:7
-        ax(i) = subplot(2,4,i); hold on; box on;
-        ax(i).FontSize = fontsize;
-        ax(i).XLabel.String = input_headers(i);
-        ax(i).XLabel.Interpreter = 'none';
-        ax(i).YLim = [-50,50];
-        ax(i).YLabel.String = 'dimensionless grounded volume error';
+    count = 1;
+    for i = [1,3,4,5,6,7]
+        ax(count) = subplot(2,3,count); hold on; box on;
+        ax(count).FontSize = fontsize;
+        ax(count).XLabel.String = input_headers(i);
+        ax(count).XLabel.Interpreter = 'none';
+        ax(count).YLim = [-50,50];
+        ax(count).YLabel.String = 'dimensionless error';
+        count = count + 1;
     end
     for ii = 1:length(iterations)
         for im = 1:length(members)
 
             scatter(ax(1), model_input(ii,im).weertman_c_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
-            scatter(ax(2), model_input(ii,im).ungrounded_weertmanC_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
-            scatter(ax(3), model_input(ii,im).glen_a_ref_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
-            scatter(ax(4), model_input(ii,im).melt_rate_prefactor_exponent, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
-            scatter(ax(5), model_input(ii,im).per_century_trend, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
-            scatter(ax(6), model_input(ii,im).bump_amplitude, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
-            scatter(ax(7), model_input(ii,im).bump_duration, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
+         %   scatter(ax(2), model_input(ii,im).ungrounded_weertmanC_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
+            scatter(ax(2), model_input(ii,im).glen_a_ref_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
+            scatter(ax(3), model_input(ii,im).melt_rate_prefactor_exponent, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
+            scatter(ax(4), model_input(ii,im).per_century_trend, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
+            scatter(ax(5), model_input(ii,im).bump_amplitude, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
+            scatter(ax(6), model_input(ii,im).bump_duration, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
 
         end %end loop members
     end %end loop over iterations
 
-    for i = 1:7
+    for i = 1:6
         xl = ax(i).XLim;
         plot(ax(i), xl, [0,0], 'k--', 'linewidth',1.5)
         ax(i).XLim = xl;
@@ -246,17 +248,27 @@ if plot_random_forcing_anomaly
     fpath = strcat("../../model-inputs-and-outputs/realization", padded_realization, "/realization.mat");
     rf = load(fpath);
     figure(numplot); clf; hold on;
-    plot(rf.time + start_year, rf.pycnocline_center, 'k', 'linewidth', 1.5); 
+    plot(rf.time + start_year, rf.pycnocline_center, 'k', 'linewidth', 2); 
     hold on
-    plot([min(rf.time), max(rf.time)]+start_year, [-500,-500], 'k--', 'linewidth', 1.5)
+    plot([min(rf.time), max(rf.time)]+start_year, [-500,-500], 'k--', 'linewidth', 2)
     ax = gca;
-    ax.FontSize = 14;
+    ax.FontSize = 16;
     ax.YLim = [-650, -350];
     box(ax, 'on');
     ax.XLabel.String = 'year';
     ax.YLabel.String = 'pycnocline center depth (m)';
     ax.FontName = 'GillSans';
 
+    % add the natural trend since 1960
+    [~,idx] = min(abs(rf.time - (1960 - start_year)));
+    pc_since_1960 = rf.pycnocline_center;
+    pc_since_1960 = pc_since_1960(idx:end);
+    t_since_1960 = rf.time;
+    t_since_1960 = t_since_1960(idx:end);
+    mdl = fitlm(t_since_1960, pc_since_1960);
+    cc =  mdl.Coefficients.Estimate; 
+    plot(t_since_1960 + start_year, cc(1) + cc(2)*t_since_1960, 'r--', 'linewidth', 1.5);
+    
 
 end
 
