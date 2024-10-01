@@ -3,3 +3,4 @@
 ensembler/*
 *.RData
 *.Rhistory
+*.csv
