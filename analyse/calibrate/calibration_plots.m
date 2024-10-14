@@ -14,18 +14,18 @@
 %
 
 %specify plots
-scatter_error_and_parameter_colour_by_iteration = 1;
-plot_grv_and_ctsglpos_trajectories              = 1;
+scatter_error_and_parameter_colour_by_iteration = 0;
+plot_grv_and_ctsglpos_trajectories              = 0;
 plot_error_correlations                         = 0;
-plot_random_forcing_anomaly                     = 1;
-
+plot_random_forcing_anomaly                     = 0;
+plot_EKI_vs_LHC                                 = 0;
 
 gendata = 1
 %% Preliminaries
 addpath('../../functions/');
 
 %specify ensemble
-realization = 40;
+realization = 21;
 iterations  = 1:5;
 members     = 1:20;
 
@@ -272,3 +272,51 @@ if plot_random_forcing_anomaly
 
 end
 
+%% plot comparison between EKI and LHC 
+
+if plot_EKI_vs_LHC
+    figure(numplot); clf; 
+    if iteration ~= 21
+    error("Only have LHC data for iteration = 21")
+    else
+
+        colmap = cmocean('ice',length(iterations)+2 );
+    obscolor = [1,0.,0.];
+    figure(numplot); clf;
+    for i = 1:2
+        ax(i) = subplot(1,2,i);
+        hold(ax(i), "on");
+        box(ax(i), "on");
+        ax(i).FontSize = fontsize;
+        ax(i).FontName = 'GillSans';
+    end
+
+    for ii = 1:length(iterations)
+        for im = 1:length(members)
+            plot(ax(1), model_output(ii,im).time, smooth(model_output(ii,im).gl_pos_cts,1),'linewidth', 1.5, 'Color',colmap(ii,:) );
+
+        end
+    end %end loop over iterations
+
+    % add observations
+    obs       = readmatrix("../../observations/truth_actual_cts.csv");
+    obs_times = readmatrix("../../observations/truth_times.csv") + start_year;
+    obs_err   = readmatrix('../../observations/noise_actual.csv');
+
+
+    plot(ax(1),obs_times(1)*[1,1], obs(1)+obs_err(1)*[-1,1],'color', obscolor, 'linewidth', 1.5);
+    plot(ax(1),obs_times(2)*[1,1], obs(2)+obs_err(2)*[-1,1], 'color', obscolor, 'linewidth', 1.5);
+    plot(ax(1),obs_times(1:2), obs(1:2), 'ro', 'markersize', 10, 'markerfacecolor', obscolor);
+    %tidy stuff
+    ax(1).XLabel.String = "year";
+    ax(1).YLabel.String = "grounding line position";
+
+    ax(1).YLim = [-3.1,-2.55]*1e5;
+
+
+
+    numplot = numplot + 1;
+    end
+
+
+end

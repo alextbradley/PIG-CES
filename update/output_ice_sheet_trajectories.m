@@ -2,8 +2,8 @@
 
 addpath('../functions')
 
-realization = ["026", "027", "028", "029", "030"];
-iteration   = ["001", "002", "003", "004", "005"];
+realization = ["011", "012", "014", "016", "017", "018", "019", "020"];
+iteration   = ["003"];
 member      = ["001","002","003","004","005","006","007","008", "009", "010","011","012","013","014","015","016","017","018","019","020"];
 
 dx = 3e3;
@@ -24,13 +24,13 @@ for im = 1:length(member)
         grfrac = ncread(fpath, "grfrac");
 
         %loop over time points
-        vaf = nan(1,length(t));
+        grv = nan(1,length(t));
         gl_pos_discrete = nan(1,length(t));
         gl_pos_cts = nan(1,length(t));
         yy = ncread(fpath, "y");
 
         for it = 1:length(t)
-            vaf(it) = sum(sum(squeeze(h(:,:,it).*grfrac(:,:,it)))) * dx *dy;
+            grv(it) = sum(sum(squeeze(h(:,:,it).*grfrac(:,:,it)))) * dx *dy;
             gl_pos_discrete(it) = get_gl_pos(yy,squeeze(grfrac(:,:,it)),x0);
             gl_pos_cts(it) = get_gl_pos_cts(yy,squeeze(grfrac(:,:,it)),x0);
         end
@@ -39,7 +39,7 @@ for im = 1:length(member)
 
         %check whether an observation exists
         filename = strcat(outfolder, "/output_trajectory.mat");
-	    save(filename, "time", "vaf", "gl_pos_discrete", "gl_pos_cts");
+	    save(filename, "t", "grv", "gl_pos_discrete", "gl_pos_cts");
 
     end %end file exists flag
 end %end loop over members
