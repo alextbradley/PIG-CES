@@ -33,6 +33,9 @@ for im = 1:length(n_runs)
             gl_pos_cts(it) = get_gl_pos_cts(yy,squeeze(grfrac(:,:,it)),x0);
         end
 
+        output = observe_ice_sheet(fpath)
+        output_cts = observe_ice_sheet_cts(fpath)
+
         outfolder = strcat("/data/hpcdata/users/aleey/projects/AttributionRealWorld/manual-EKI/model-inputs-and-outputs/realization0", realization(ir), "_lhc/member", num2str(n_runs(im)));
         if ~exist(outfolder)
         mkdir(outfolder)
@@ -41,6 +44,13 @@ for im = 1:length(n_runs)
         %check whether an observation exists
         filename = strcat(outfolder, "/output_trajectory.mat");
 	    save(filename, "t", "grv", "gl_pos_discrete", "gl_pos_cts");
+
+        filename = strcat(outfolder, "/outputs.csv");
+        writematrix(output, filename);
+
+        filename = strcat(outfolder, "/outputs_cts.csv");
+        writematrix(output_cts, filename);
+
 
     end %end file exists flag
 end %end loop over runs
