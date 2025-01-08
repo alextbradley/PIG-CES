@@ -1,5 +1,5 @@
 *.DS_Store
 *.asv
-ensembler/*
+ensembler/cases/manual-eki-forwardruns-*
 *.RData
 *.Rhistory

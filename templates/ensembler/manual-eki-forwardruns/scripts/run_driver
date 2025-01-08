@@ -1,0 +1,34 @@
+#!/usr/bin/env julia
+
+# Overriding println, quite amazing the line buffering doesn't seem to activate
+# when directing to file...
+# https://github.com/JuliaLang/julia/issues/13954
+# https://discourse.julialang.org/t/issues-with-println-buffering-output-when-redirecting-stdout-to-a-txt-file/23738/3
+@eval Base println(xs...) = begin res = println(stdout::IO, xs...); flush(stdout); return res end;
+@eval Base println(io::IO) =  begin res =  print(io, '\n'); flush(io); return res end;
+
+using Dates
+using Pkg
+using Printf
+
+env_name = "WAVI_ENV" in keys(ENV) ? ENV["WAVI_ENV"] : "wavi_test"
+Pkg.activate(env_name)
+
+cwd = pwd()
+@printf("\nCurrent working directory: %s\n", cwd)
+@printf("\nStart time: %s\n", Dates.now())
+@printf("\nJulia args: %s\n", join(Base.ARGS, ", "))
+
+#include everything the code directory
+for f in readdir("../code")
+    if f[end-2:end] == ".jl"
+        println("included code: ", f)
+        include(string("../code/", f))
+    end
+end
+
+#run the driver script
+include("../run/driver.jl")
+driver()
+
+@printf("\nEnd time: %s\n", Dates.now())

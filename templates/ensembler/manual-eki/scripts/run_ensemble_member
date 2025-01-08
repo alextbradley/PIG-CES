@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+#SBATCH --output={{ run.dir }}/job.%j.%N.out
+#SBATCH --error={{ run.dir }}/job.%j.%N.err
+#SBATCH --chdir={{ run.dir }}
+#SBATCH --mail-type=begin,end,fail,requeue
+#SBATCH --mail-user={{ run.email }}
+#SBATCH --job-name={{ run.id }}
+#SBATCH --nodes={{ run.nodes }}
+#SBATCH --partition={{ run.cluster }}
+#SBATCH --account={{ run.cluster }}
+#SBATCH --cpus-per-task={{ run.ntasks }}
+#SBATCH --mem=8gb
+#SBATCH --signal=B:SIGINT@60
+
+# TODO: this logic is better in the ensemble run items, only to align to
+# previous approach have I ended up implementing it here, but it's growing :(
+
+CWD="`realpath .`"
+NAME="basename $CWD"
+RUNDIR="run"
+OUTFILE="outfile.nc"
+
+module load hpc/julia/1.6.2
+
+cd $RUNDIR
+
+export PATH="`realpath ..`/scripts:$PATH"
+
+if [ ! -f driver.jl ]; then
+  prep_run
+else
+  if ! ls PChkpt_*.jld2 1> /dev/null 2>&1 ; then
+    echo 'job chain: fail, no pickup files'
+    exit 1
+  fi
+
+  for file in PChkpt_*.jld2; do
+    [[ $file -nt $PICKUP_FILE ]] && PICKUP_FILE=$file
+  done
+  # Extract the middle bit of this filename
+  PICKUP=${PICKUP_FILE#PChkpt_}
+  PICKUP=${PICKUP%.jld2}
+
+  # TODO: no check to see if this will actually work
+  re='^[0-9]+$'
+  if [[ $PICKUP =~ $re ]]; then
+    echo 'job chain: pickup from permanent checkpoint'
+
+    # Save the timestep, with any leading zeros removed
+    CURITER=$( egrep '^niter0' driver.jl | sed -r 's/^niter0 = ([0-9]+)/\1/' )
+    NITER0=$(echo $PICKUP | sed 's/^0*//')
+
+    if [ "$CURITER" -eq "$NITER0" ] && [ ! -f $OUTFILE ]; then
+      echo "No progress was made in the last run, we'll assume failure or another
+      termination scenario. Please investigate or contact devs if necessary.
+      We'll be placing an $OUTFILE to prevent further submissions." | mail -s "Failure notification for $NAME " {{ run.email }}
+      # Touch an output file as a marker
+      touch $OUTFILE
+      exit 1
+    fi
+  else
+    echo 'job chain: fail, problem w pickup (WAVI only currently supports pCkpt pickups)' $PICKUP
+    exit 1
+  fi
+
+  #edit the driver namelist: replace the first instance of niter0 = * with appropriate checkpoint number
+  NITER0_LINE="niter0 = $NITER0"
+  echo $NITER0_LINE
+  sed -i '0,/.*niter0.*/s//'"$NITER0_LINE"'/' driver.jl
+fi
+
+run_driver >proc.${PICKUP:-0}.log 2>&1
+
+exit $?
