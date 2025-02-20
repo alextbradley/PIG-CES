@@ -8,7 +8,7 @@ function update_EKI(realization,completed_iteration)
 
     padded_realization = @sprintf("%03d", realization);
     padded_completed_iteration = @sprintf("%03d", completed_iteration);
-    eki_path =  "./realization" * padded_realization * "/iteration" * padded_completed_iteration * "/eki.jld2"
+    eki_path =  "./model-inputs-and-outputs/realization" * padded_realization * "/iteration" * padded_completed_iteration * "/eki.jld2"
 
     @load eki_path eki param_dict prior
     N_ensemble = eki.N_ens
@@ -18,7 +18,7 @@ function update_EKI(realization,completed_iteration)
     G_ens = zeros(dim_output, N_ensemble)
     for member in 1:N_ensemble
         padded_member = @sprintf("%03d", member);
-        output_path =  "./realization" * padded_realization * "/iteration" * padded_completed_iteration * "/member" * padded_member *"/outputs.csv"
+        output_path =  "./model-inputs-and-outputs/realization" * padded_realization * "/iteration" * padded_completed_iteration * "/member" * padded_member *"/outputs.csv"
         if isfile(output_path)
         model_output = Matrix(CSV.read(output_path, DataFrame, header = false))'
         G_ens[:, member] = model_output
@@ -33,7 +33,7 @@ function update_EKI(realization,completed_iteration)
 
     # generate the folder structure
     padded_next_iteration = @sprintf("%03d", completed_iteration+1);
-    iter_path = "./realization" * padded_realization * "/iteration" * padded_next_iteration 
+    iter_path = "./model-inputs-and-outputs/realization" * padded_realization * "/iteration" * padded_next_iteration 
     mkdir(iter_path)
 
     for member = 1:N_ensemble

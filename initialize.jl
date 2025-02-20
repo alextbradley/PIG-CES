@@ -13,10 +13,9 @@ function initialize_EKI(realization, n_ensemble)
         return
     end
 
-
     # check that this folder does not already exist. If so, terminal and do nothing
     padded_realization = @sprintf("%03d", realization);
-    folder_path = "./realization" * string(padded_realization)
+    folder_path = "./model-inputs-and-outputs/realization" * string(padded_realization)
     iter_path   = folder_path * "/iteration001"
     if isdir(folder_path)
         println("Folder exists: ", folder_path, ", terminating")
@@ -42,6 +41,12 @@ function initialize_EKI(realization, n_ensemble)
     for member = 1:n_ensemble
         member_padded = @sprintf("%03d", member);
         mkdir(iter_path * "/member" * member_padded)
+
+        #write a tmp file so that git knows about folder structure
+        path = iter_path*"/member" * member_padded*"/tmp.txt"
+        open(path, "w") do file
+            write(file, "temp file\n")
+        end
     end
 
     # save the parameter values in txt format

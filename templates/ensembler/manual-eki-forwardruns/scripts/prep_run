@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Empty the run directory - but first make sure it exists!
+
+if [ $( basename `pwd` ) != "run" ]; then
+  echo "This should be a directory called run, under the case folder"
+  exit 1
+fi
+
+# Link everything from the input directory
+ln -s ../input/* .
+
+# Proper copy of the driver file
+rm -fv driver.jl
+cp -f ../input/driver.jl .
+
+# Deep copy of any pickups (so they don't get overwritten in input/)
+rm -fv pickup*
+cp -fv ../input/pickup* . 2>/dev/null
+
+ln -s ../../../${WAVI_ENV:-wavi_test}

@@ -1,0 +1,849 @@
+---
+ensemble:
+  vars:                 {}
+
+  pre_process:          []
+  post_process:         []
+
+  batch_config:
+    templatedir:  manual-eki
+    templates:
+      - input/driver.jl.j2
+      - scripts/run_ensemble_member.j2
+    email:        aleey@bas.ac.uk
+    job_file:     scripts/run_ensemble_member
+    cluster:      long
+    nodes:        1
+    ntasks:       1
+    length:       10-00:00:00
+    maxruns:      1000
+    maxjobs:      1000
+
+  batches:
+    - name:       manual-eki-021-025-iteration002
+      basedir:    ./cases
+      repeat:     True
+      pre_batch:  []
+      pre_run:
+        - name:   check
+          args:
+            cmd:  ../../scripts/BAS/pre_run.sh /data/icesheet_output/${USER}/WAVIhpc
+            fail: True
+        - name:   quota
+          args:
+            atleast:  1073
+      runs:
+      - weertman_c_prefactor: 1.0483
+        ungrounded_weertmanC_prefactor: 1.0356
+        glen_a_ref_prefactor: 0.7777
+        melt_rate_prefactor_exponent: -1.2885
+        per_century_trend: 100.6817
+        bump_amplitude: 86.4969
+        bump_duration: 6.0129
+        random_seed: 21
+      - weertman_c_prefactor: 0.8513
+        ungrounded_weertmanC_prefactor: 0.8290
+        glen_a_ref_prefactor: 1.3355
+        melt_rate_prefactor_exponent: -0.4783
+        per_century_trend: -155.0189
+        bump_amplitude: 121.1868
+        bump_duration: 11.6938
+        random_seed: 21
+      - weertman_c_prefactor: 1.0154
+        ungrounded_weertmanC_prefactor: 1.1231
+        glen_a_ref_prefactor: 0.8773
+        melt_rate_prefactor_exponent: -0.7044
+        per_century_trend: -107.7125
+        bump_amplitude: 205.6060
+        bump_duration: 8.1776
+        random_seed: 21
+      - weertman_c_prefactor: 0.7978
+        ungrounded_weertmanC_prefactor: 0.5666
+        glen_a_ref_prefactor: 0.5773
+        melt_rate_prefactor_exponent: 0.5744
+        per_century_trend: 198.2337
+        bump_amplitude: 108.6239
+        bump_duration: 4.6687
+        random_seed: 21
+      - weertman_c_prefactor: 1.2378
+        ungrounded_weertmanC_prefactor: 1.3883
+        glen_a_ref_prefactor: 0.5845
+        melt_rate_prefactor_exponent: -1.6898
+        per_century_trend: -368.6036
+        bump_amplitude: 181.9087
+        bump_duration: 9.1470
+        random_seed: 21
+      - weertman_c_prefactor: 1.0051
+        ungrounded_weertmanC_prefactor: 1.1421
+        glen_a_ref_prefactor: 1.0046
+        melt_rate_prefactor_exponent: -2.3033
+        per_century_trend: -138.7620
+        bump_amplitude: 160.9842
+        bump_duration: 9.0605
+        random_seed: 21
+      - weertman_c_prefactor: 0.9950
+        ungrounded_weertmanC_prefactor: 1.2331
+        glen_a_ref_prefactor: 1.1147
+        melt_rate_prefactor_exponent: -1.2152
+        per_century_trend: 282.7637
+        bump_amplitude: 49.3552
+        bump_duration: 9.6249
+        random_seed: 21
+      - weertman_c_prefactor: 0.9350
+        ungrounded_weertmanC_prefactor: 0.8872
+        glen_a_ref_prefactor: 1.0518
+        melt_rate_prefactor_exponent: -2.3154
+        per_century_trend: 7.6726
+        bump_amplitude: 121.8594
+        bump_duration: 9.7048
+        random_seed: 21
+      - weertman_c_prefactor: 1.0376
+        ungrounded_weertmanC_prefactor: 1.0731
+        glen_a_ref_prefactor: 0.4132
+        melt_rate_prefactor_exponent: -1.5235
+        per_century_trend: 236.4255
+        bump_amplitude: 116.7597
+        bump_duration: 4.9569
+        random_seed: 21
+      - weertman_c_prefactor: 0.7435
+        ungrounded_weertmanC_prefactor: 2.0231
+        glen_a_ref_prefactor: 0.7671
+        melt_rate_prefactor_exponent: -0.5522
+        per_century_trend: -29.5798
+        bump_amplitude: 20.8263
+        bump_duration: 1.5594
+        random_seed: 21
+      - weertman_c_prefactor: 0.9314
+        ungrounded_weertmanC_prefactor: 1.6846
+        glen_a_ref_prefactor: 0.6395
+        melt_rate_prefactor_exponent: -1.1808
+        per_century_trend: -44.2797
+        bump_amplitude: 106.5930
+        bump_duration: 3.3788
+        random_seed: 21
+      - weertman_c_prefactor: 0.9293
+        ungrounded_weertmanC_prefactor: 1.1289
+        glen_a_ref_prefactor: 0.2422
+        melt_rate_prefactor_exponent: -0.2073
+        per_century_trend: -132.7701
+        bump_amplitude: 168.7971
+        bump_duration: 3.7414
+        random_seed: 21
+      - weertman_c_prefactor: 0.8368
+        ungrounded_weertmanC_prefactor: 1.3605
+        glen_a_ref_prefactor: 1.1029
+        melt_rate_prefactor_exponent: -0.2482
+        per_century_trend: 480.9174
+        bump_amplitude: 74.4203
+        bump_duration: 5.9216
+        random_seed: 21
+      - weertman_c_prefactor: 0.7656
+        ungrounded_weertmanC_prefactor: 1.4192
+        glen_a_ref_prefactor: 0.6857
+        melt_rate_prefactor_exponent: 0.2667
+        per_century_trend: -117.1282
+        bump_amplitude: 68.9898
+        bump_duration: 3.2316
+        random_seed: 21
+      - weertman_c_prefactor: 0.8013
+        ungrounded_weertmanC_prefactor: 1.1090
+        glen_a_ref_prefactor: 1.1454
+        melt_rate_prefactor_exponent: -1.2207
+        per_century_trend: -84.5879
+        bump_amplitude: 234.3567
+        bump_duration: 5.9348
+        random_seed: 21
+      - weertman_c_prefactor: 0.7416
+        ungrounded_weertmanC_prefactor: 1.3373
+        glen_a_ref_prefactor: 0.7890
+        melt_rate_prefactor_exponent: -0.5106
+        per_century_trend: -28.9617
+        bump_amplitude: 160.9788
+        bump_duration: 5.4607
+        random_seed: 21
+      - weertman_c_prefactor: 1.0583
+        ungrounded_weertmanC_prefactor: 1.0034
+        glen_a_ref_prefactor: 0.3974
+        melt_rate_prefactor_exponent: -0.6166
+        per_century_trend: -28.4406
+        bump_amplitude: 66.8769
+        bump_duration: 6.5893
+        random_seed: 21
+      - weertman_c_prefactor: 0.7809
+        ungrounded_weertmanC_prefactor: 0.9029
+        glen_a_ref_prefactor: 0.7282
+        melt_rate_prefactor_exponent: 0.3320
+        per_century_trend: -12.8790
+        bump_amplitude: 215.3085
+        bump_duration: 9.0938
+        random_seed: 21
+      - weertman_c_prefactor: 0.7993
+        ungrounded_weertmanC_prefactor: 0.9929
+        glen_a_ref_prefactor: 1.1681
+        melt_rate_prefactor_exponent: -0.9600
+        per_century_trend: 230.7793
+        bump_amplitude: 234.4161
+        bump_duration: 0.8191
+        random_seed: 21
+      - weertman_c_prefactor: 0.9385
+        ungrounded_weertmanC_prefactor: 0.1654
+        glen_a_ref_prefactor: 0.4844
+        melt_rate_prefactor_exponent: 0.3524
+        per_century_trend: 68.8636
+        bump_amplitude: -0.8306
+        bump_duration: 2.2666
+        random_seed: 21
+      - weertman_c_prefactor: 0.7888
+        ungrounded_weertmanC_prefactor: 0.7657
+        glen_a_ref_prefactor: 1.1715
+        melt_rate_prefactor_exponent: 0.2705
+        per_century_trend: -16.9588
+        bump_amplitude: 183.0177
+        bump_duration: 5.6283
+        random_seed: 22
+      - weertman_c_prefactor: 0.8453
+        ungrounded_weertmanC_prefactor: 1.2787
+        glen_a_ref_prefactor: 1.1603
+        melt_rate_prefactor_exponent: -2.1829
+        per_century_trend: -150.4564
+        bump_amplitude: 170.1145
+        bump_duration: 10.3864
+        random_seed: 22
+      - weertman_c_prefactor: 0.9169
+        ungrounded_weertmanC_prefactor: 0.9876
+        glen_a_ref_prefactor: 0.9225
+        melt_rate_prefactor_exponent: 0.1487
+        per_century_trend: -21.4903
+        bump_amplitude: 356.3344
+        bump_duration: 7.5605
+        random_seed: 22
+      - weertman_c_prefactor: 0.7747
+        ungrounded_weertmanC_prefactor: 1.2869
+        glen_a_ref_prefactor: 1.3377
+        melt_rate_prefactor_exponent: 0.5724
+        per_century_trend: -233.1943
+        bump_amplitude: 136.5506
+        bump_duration: 6.0881
+        random_seed: 22
+      - weertman_c_prefactor: 0.7689
+        ungrounded_weertmanC_prefactor: 1.1666
+        glen_a_ref_prefactor: 1.1449
+        melt_rate_prefactor_exponent: 0.8264
+        per_century_trend: -354.7718
+        bump_amplitude: 212.9317
+        bump_duration: 5.7609
+        random_seed: 22
+      - weertman_c_prefactor: 1.1410
+        ungrounded_weertmanC_prefactor: 1.0739
+        glen_a_ref_prefactor: 0.9609
+        melt_rate_prefactor_exponent: -0.1055
+        per_century_trend: 2.7869
+        bump_amplitude: 209.9318
+        bump_duration: 5.3427
+        random_seed: 22
+      - weertman_c_prefactor: 0.9684
+        ungrounded_weertmanC_prefactor: 1.0489
+        glen_a_ref_prefactor: 0.9212
+        melt_rate_prefactor_exponent: 0.2914
+        per_century_trend: -32.9263
+        bump_amplitude: 266.2517
+        bump_duration: 6.6231
+        random_seed: 22
+      - weertman_c_prefactor: 0.8037
+        ungrounded_weertmanC_prefactor: 1.1217
+        glen_a_ref_prefactor: 1.1695
+        melt_rate_prefactor_exponent: 0.5601
+        per_century_trend: -231.6350
+        bump_amplitude: 268.0489
+        bump_duration: 7.9187
+        random_seed: 22
+      - weertman_c_prefactor: 0.8424
+        ungrounded_weertmanC_prefactor: 0.9523
+        glen_a_ref_prefactor: 0.2263
+        melt_rate_prefactor_exponent: 0.8943
+        per_century_trend: 341.3145
+        bump_amplitude: 137.2852
+        bump_duration: 6.9949
+        random_seed: 22
+      - weertman_c_prefactor: 0.6614
+        ungrounded_weertmanC_prefactor: 1.6226
+        glen_a_ref_prefactor: 1.1462
+        melt_rate_prefactor_exponent: 0.7780
+        per_century_trend: 331.4184
+        bump_amplitude: 17.9636
+        bump_duration: 8.2765
+        random_seed: 22
+      - weertman_c_prefactor: 0.9941
+        ungrounded_weertmanC_prefactor: 1.0001
+        glen_a_ref_prefactor: 0.7720
+        melt_rate_prefactor_exponent: 0.3511
+        per_century_trend: 312.7178
+        bump_amplitude: 241.8379
+        bump_duration: 6.8649
+        random_seed: 22
+      - weertman_c_prefactor: 0.8203
+        ungrounded_weertmanC_prefactor: 1.2207
+        glen_a_ref_prefactor: 0.5757
+        melt_rate_prefactor_exponent: -0.2275
+        per_century_trend: -115.2685
+        bump_amplitude: 240.4873
+        bump_duration: 8.1406
+        random_seed: 22
+      - weertman_c_prefactor: 0.5190
+        ungrounded_weertmanC_prefactor: 1.2838
+        glen_a_ref_prefactor: 0.9621
+        melt_rate_prefactor_exponent: 0.3845
+        per_century_trend: -109.5463
+        bump_amplitude: 174.1929
+        bump_duration: 9.5357
+        random_seed: 22
+      - weertman_c_prefactor: 0.8623
+        ungrounded_weertmanC_prefactor: 1.3384
+        glen_a_ref_prefactor: 1.6157
+        melt_rate_prefactor_exponent: 0.5381
+        per_century_trend: -392.6729
+        bump_amplitude: 217.3817
+        bump_duration: 5.6827
+        random_seed: 22
+      - weertman_c_prefactor: 0.8552
+        ungrounded_weertmanC_prefactor: 1.0156
+        glen_a_ref_prefactor: 0.8712
+        melt_rate_prefactor_exponent: 0.5309
+        per_century_trend: -235.3217
+        bump_amplitude: 64.4505
+        bump_duration: 6.3545
+        random_seed: 22
+      - weertman_c_prefactor: 0.8399
+        ungrounded_weertmanC_prefactor: 1.0133
+        glen_a_ref_prefactor: 0.8549
+        melt_rate_prefactor_exponent: -0.1353
+        per_century_trend: 80.6994
+        bump_amplitude: 215.6806
+        bump_duration: 8.6641
+        random_seed: 22
+      - weertman_c_prefactor: 0.8282
+        ungrounded_weertmanC_prefactor: 1.1554
+        glen_a_ref_prefactor: 0.8008
+        melt_rate_prefactor_exponent: -0.1484
+        per_century_trend: -36.0600
+        bump_amplitude: 181.6454
+        bump_duration: 6.8544
+        random_seed: 22
+      - weertman_c_prefactor: 0.8062
+        ungrounded_weertmanC_prefactor: 1.8706
+        glen_a_ref_prefactor: 0.7742
+        melt_rate_prefactor_exponent: -0.1082
+        per_century_trend: -331.9013
+        bump_amplitude: 126.2061
+        bump_duration: 2.0542
+        random_seed: 22
+      - weertman_c_prefactor: 0.8530
+        ungrounded_weertmanC_prefactor: 1.2864
+        glen_a_ref_prefactor: 1.2990
+        melt_rate_prefactor_exponent: 0.8570
+        per_century_trend: 256.9023
+        bump_amplitude: 208.0834
+        bump_duration: 11.4632
+        random_seed: 22
+      - weertman_c_prefactor: 1.0650
+        ungrounded_weertmanC_prefactor: 1.2629
+        glen_a_ref_prefactor: 1.1292
+        melt_rate_prefactor_exponent: -0.2284
+        per_century_trend: 164.6399
+        bump_amplitude: 176.6196
+        bump_duration: 11.3732
+        random_seed: 22
+      - weertman_c_prefactor: 0.7581
+        ungrounded_weertmanC_prefactor: 0.4203
+        glen_a_ref_prefactor: 0.9068
+        melt_rate_prefactor_exponent: 0.0047
+        per_century_trend: 275.7904
+        bump_amplitude: 278.5499
+        bump_duration: 5.2803
+        random_seed: 23
+      - weertman_c_prefactor: 0.9171
+        ungrounded_weertmanC_prefactor: 0.6232
+        glen_a_ref_prefactor: 1.0386
+        melt_rate_prefactor_exponent: 0.4289
+        per_century_trend: 148.3424
+        bump_amplitude: 159.1267
+        bump_duration: 3.7132
+        random_seed: 23
+      - weertman_c_prefactor: 0.8448
+        ungrounded_weertmanC_prefactor: 0.4966
+        glen_a_ref_prefactor: 0.8446
+        melt_rate_prefactor_exponent: 0.2749
+        per_century_trend: 201.4962
+        bump_amplitude: 70.5704
+        bump_duration: 5.5166
+        random_seed: 23
+      - weertman_c_prefactor: 1.1170
+        ungrounded_weertmanC_prefactor: 0.6746
+        glen_a_ref_prefactor: 1.1900
+        melt_rate_prefactor_exponent: -2.2975
+        per_century_trend: -155.9514
+        bump_amplitude: 26.7431
+        bump_duration: 1.1476
+        random_seed: 23
+      - weertman_c_prefactor: 0.9865
+        ungrounded_weertmanC_prefactor: 1.2694
+        glen_a_ref_prefactor: 1.0135
+        melt_rate_prefactor_exponent: -0.3554
+        per_century_trend: -103.4208
+        bump_amplitude: 226.1694
+        bump_duration: 5.6014
+        random_seed: 23
+      - weertman_c_prefactor: 0.9426
+        ungrounded_weertmanC_prefactor: 0.9841
+        glen_a_ref_prefactor: 0.5384
+        melt_rate_prefactor_exponent: 0.4630
+        per_century_trend: 86.3425
+        bump_amplitude: 401.2749
+        bump_duration: 4.8251
+        random_seed: 23
+      - weertman_c_prefactor: 1.0152
+        ungrounded_weertmanC_prefactor: 1.1055
+        glen_a_ref_prefactor: 1.2563
+        melt_rate_prefactor_exponent: -2.3174
+        per_century_trend: -9.0478
+        bump_amplitude: 248.0671
+        bump_duration: 7.0151
+        random_seed: 23
+      - weertman_c_prefactor: 0.9907
+        ungrounded_weertmanC_prefactor: 0.8371
+        glen_a_ref_prefactor: 0.7669
+        melt_rate_prefactor_exponent: -0.3605
+        per_century_trend: 271.5549
+        bump_amplitude: 218.5806
+        bump_duration: 6.5371
+        random_seed: 23
+      - weertman_c_prefactor: 0.9587
+        ungrounded_weertmanC_prefactor: 1.3135
+        glen_a_ref_prefactor: 0.8642
+        melt_rate_prefactor_exponent: 0.6026
+        per_century_trend: -71.2864
+        bump_amplitude: 266.7821
+        bump_duration: 5.9322
+        random_seed: 23
+      - weertman_c_prefactor: 1.0201
+        ungrounded_weertmanC_prefactor: 1.0714
+        glen_a_ref_prefactor: 0.8119
+        melt_rate_prefactor_exponent: -0.5504
+        per_century_trend: -83.0509
+        bump_amplitude: 287.1918
+        bump_duration: 5.6946
+        random_seed: 23
+      - weertman_c_prefactor: 1.0380
+        ungrounded_weertmanC_prefactor: 1.0846
+        glen_a_ref_prefactor: 1.1375
+        melt_rate_prefactor_exponent: 0.2743
+        per_century_trend: 150.9885
+        bump_amplitude: 202.3266
+        bump_duration: 4.9660
+        random_seed: 23
+      - weertman_c_prefactor: 0.8382
+        ungrounded_weertmanC_prefactor: 0.9264
+        glen_a_ref_prefactor: 1.1625
+        melt_rate_prefactor_exponent: 0.5747
+        per_century_trend: 257.4735
+        bump_amplitude: 91.5995
+        bump_duration: 4.8942
+        random_seed: 23
+      - weertman_c_prefactor: 0.9033
+        ungrounded_weertmanC_prefactor: 1.2771
+        glen_a_ref_prefactor: 1.5134
+        melt_rate_prefactor_exponent: 0.0764
+        per_century_trend: -253.6336
+        bump_amplitude: 246.2274
+        bump_duration: 11.0529
+        random_seed: 23
+      - weertman_c_prefactor: 1.0684
+        ungrounded_weertmanC_prefactor: 0.6200
+        glen_a_ref_prefactor: 0.5926
+        melt_rate_prefactor_exponent: -0.1164
+        per_century_trend: 22.0564
+        bump_amplitude: 59.5278
+        bump_duration: 3.9819
+        random_seed: 23
+      - weertman_c_prefactor: 0.8811
+        ungrounded_weertmanC_prefactor: 0.5454
+        glen_a_ref_prefactor: 1.0449
+        melt_rate_prefactor_exponent: 0.5268
+        per_century_trend: 182.9554
+        bump_amplitude: 350.5843
+        bump_duration: 2.3768
+        random_seed: 23
+      - weertman_c_prefactor: 0.8640
+        ungrounded_weertmanC_prefactor: 0.5806
+        glen_a_ref_prefactor: 1.2308
+        melt_rate_prefactor_exponent: -0.0298
+        per_century_trend: 118.1627
+        bump_amplitude: 263.2899
+        bump_duration: 5.9533
+        random_seed: 23
+      - weertman_c_prefactor: 0.9520
+        ungrounded_weertmanC_prefactor: 1.2820
+        glen_a_ref_prefactor: 1.2431
+        melt_rate_prefactor_exponent: -0.7115
+        per_century_trend: 68.6169
+        bump_amplitude: 70.0343
+        bump_duration: 8.9044
+        random_seed: 23
+      - weertman_c_prefactor: 0.9456
+        ungrounded_weertmanC_prefactor: 1.0251
+        glen_a_ref_prefactor: 1.7268
+        melt_rate_prefactor_exponent: 0.0783
+        per_century_trend: 69.3033
+        bump_amplitude: 157.0015
+        bump_duration: 5.4937
+        random_seed: 23
+      - weertman_c_prefactor: 0.9547
+        ungrounded_weertmanC_prefactor: 0.9492
+        glen_a_ref_prefactor: 0.8818
+        melt_rate_prefactor_exponent: 0.5577
+        per_century_trend: 284.8164
+        bump_amplitude: 259.8043
+        bump_duration: 5.0114
+        random_seed: 23
+      - weertman_c_prefactor: 0.8819
+        ungrounded_weertmanC_prefactor: 1.0086
+        glen_a_ref_prefactor: 0.8235
+        melt_rate_prefactor_exponent: 0.3649
+        per_century_trend: 292.8335
+        bump_amplitude: 183.9954
+        bump_duration: 6.0785
+        random_seed: 23
+      - weertman_c_prefactor: 1.0287
+        ungrounded_weertmanC_prefactor: 1.1609
+        glen_a_ref_prefactor: 0.7582
+        melt_rate_prefactor_exponent: -0.0642
+        per_century_trend: -58.2668
+        bump_amplitude: 177.7493
+        bump_duration: 2.4265
+        random_seed: 24
+      - weertman_c_prefactor: 1.1050
+        ungrounded_weertmanC_prefactor: 1.2257
+        glen_a_ref_prefactor: 1.0372
+        melt_rate_prefactor_exponent: -1.2065
+        per_century_trend: -156.1367
+        bump_amplitude: 300.7824
+        bump_duration: 5.4057
+        random_seed: 24
+      - weertman_c_prefactor: 1.0641
+        ungrounded_weertmanC_prefactor: 0.9803
+        glen_a_ref_prefactor: 0.9722
+        melt_rate_prefactor_exponent: -0.7095
+        per_century_trend: -91.8204
+        bump_amplitude: 219.5459
+        bump_duration: 3.8306
+        random_seed: 24
+      - weertman_c_prefactor: 1.1016
+        ungrounded_weertmanC_prefactor: 0.9581
+        glen_a_ref_prefactor: 0.9986
+        melt_rate_prefactor_exponent: -0.6025
+        per_century_trend: -92.5803
+        bump_amplitude: 230.3536
+        bump_duration: 3.6829
+        random_seed: 24
+      - weertman_c_prefactor: 1.1921
+        ungrounded_weertmanC_prefactor: 1.3750
+        glen_a_ref_prefactor: 0.6636
+        melt_rate_prefactor_exponent: -0.4084
+        per_century_trend: -134.5917
+        bump_amplitude: 112.2410
+        bump_duration: 3.0414
+        random_seed: 24
+      - weertman_c_prefactor: 0.9862
+        ungrounded_weertmanC_prefactor: 0.6991
+        glen_a_ref_prefactor: 0.8642
+        melt_rate_prefactor_exponent: 0.3805
+        per_century_trend: -61.5151
+        bump_amplitude: 157.4809
+        bump_duration: 4.7441
+        random_seed: 24
+      - weertman_c_prefactor: 1.1529
+        ungrounded_weertmanC_prefactor: 1.1168
+        glen_a_ref_prefactor: 0.8314
+        melt_rate_prefactor_exponent: -0.4637
+        per_century_trend: -221.3162
+        bump_amplitude: 218.1132
+        bump_duration: 3.7045
+        random_seed: 24
+      - weertman_c_prefactor: 1.0202
+        ungrounded_weertmanC_prefactor: 0.9107
+        glen_a_ref_prefactor: 1.2729
+        melt_rate_prefactor_exponent: -0.5116
+        per_century_trend: -272.3691
+        bump_amplitude: 184.6309
+        bump_duration: 1.9607
+        random_seed: 24
+      - weertman_c_prefactor: 0.9455
+        ungrounded_weertmanC_prefactor: 0.7736
+        glen_a_ref_prefactor: 1.3125
+        melt_rate_prefactor_exponent: -0.2617
+        per_century_trend: -28.3259
+        bump_amplitude: 218.3872
+        bump_duration: 4.8834
+        random_seed: 24
+      - weertman_c_prefactor: 1.0953
+        ungrounded_weertmanC_prefactor: 1.4104
+        glen_a_ref_prefactor: 1.4367
+        melt_rate_prefactor_exponent: -2.3381
+        per_century_trend: 97.7786
+        bump_amplitude: 69.8262
+        bump_duration: 2.9966
+        random_seed: 24
+      - weertman_c_prefactor: 1.0125
+        ungrounded_weertmanC_prefactor: 0.9209
+        glen_a_ref_prefactor: 0.5918
+        melt_rate_prefactor_exponent: -0.1496
+        per_century_trend: 227.1743
+        bump_amplitude: 220.8836
+        bump_duration: 5.1335
+        random_seed: 24
+      - weertman_c_prefactor: 1.0100
+        ungrounded_weertmanC_prefactor: 0.4351
+        glen_a_ref_prefactor: 1.3199
+        melt_rate_prefactor_exponent: -1.7725
+        per_century_trend: 89.0668
+        bump_amplitude: 292.8766
+        bump_duration: 1.6408
+        random_seed: 24
+      - weertman_c_prefactor: 1.0178
+        ungrounded_weertmanC_prefactor: 1.1713
+        glen_a_ref_prefactor: 1.0834
+        melt_rate_prefactor_exponent: 0.0932
+        per_century_trend: 147.4629
+        bump_amplitude: 232.2962
+        bump_duration: 4.5353
+        random_seed: 24
+      - weertman_c_prefactor: 1.1750
+        ungrounded_weertmanC_prefactor: 0.9132
+        glen_a_ref_prefactor: 0.9942
+        melt_rate_prefactor_exponent: -0.9818
+        per_century_trend: -18.8465
+        bump_amplitude: 126.7903
+        bump_duration: 3.3686
+        random_seed: 24
+      - weertman_c_prefactor: 0.7950
+        ungrounded_weertmanC_prefactor: 0.0309
+        glen_a_ref_prefactor: 0.8395
+        melt_rate_prefactor_exponent: 0.2665
+        per_century_trend: 46.7191
+        bump_amplitude: 293.6633
+        bump_duration: 5.3881
+        random_seed: 24
+      - weertman_c_prefactor: 1.1513
+        ungrounded_weertmanC_prefactor: 1.1271
+        glen_a_ref_prefactor: 0.7129
+        melt_rate_prefactor_exponent: -0.5447
+        per_century_trend: -506.1798
+        bump_amplitude: 268.3389
+        bump_duration: 4.4952
+        random_seed: 24
+      - weertman_c_prefactor: 1.1255
+        ungrounded_weertmanC_prefactor: 0.7148
+        glen_a_ref_prefactor: 1.5037
+        melt_rate_prefactor_exponent: -2.0547
+        per_century_trend: -226.4984
+        bump_amplitude: 409.2568
+        bump_duration: 5.7727
+        random_seed: 24
+      - weertman_c_prefactor: 1.0371
+        ungrounded_weertmanC_prefactor: 1.0264
+        glen_a_ref_prefactor: 0.8541
+        melt_rate_prefactor_exponent: 0.1520
+        per_century_trend: -133.5948
+        bump_amplitude: 222.0946
+        bump_duration: 6.6470
+        random_seed: 24
+      - weertman_c_prefactor: 0.9677
+        ungrounded_weertmanC_prefactor: 0.8663
+        glen_a_ref_prefactor: 0.6495
+        melt_rate_prefactor_exponent: 0.1602
+        per_century_trend: -86.0071
+        bump_amplitude: 316.5233
+        bump_duration: 0.9778
+        random_seed: 24
+      - weertman_c_prefactor: 0.9746
+        ungrounded_weertmanC_prefactor: 1.2296
+        glen_a_ref_prefactor: 1.1824
+        melt_rate_prefactor_exponent: 0.5867
+        per_century_trend: 163.8601
+        bump_amplitude: 190.0477
+        bump_duration: 2.0164
+        random_seed: 24
+      - weertman_c_prefactor: 0.6697
+        ungrounded_weertmanC_prefactor: 0.9605
+        glen_a_ref_prefactor: 0.9781
+        melt_rate_prefactor_exponent: -0.1620
+        per_century_trend: -116.5659
+        bump_amplitude: 226.3990
+        bump_duration: 4.7402
+        random_seed: 25
+      - weertman_c_prefactor: 0.8498
+        ungrounded_weertmanC_prefactor: 0.8559
+        glen_a_ref_prefactor: 0.6826
+        melt_rate_prefactor_exponent: -0.6368
+        per_century_trend: -404.2802
+        bump_amplitude: 136.2202
+        bump_duration: 6.2410
+        random_seed: 25
+      - weertman_c_prefactor: 1.0482
+        ungrounded_weertmanC_prefactor: 1.0959
+        glen_a_ref_prefactor: 1.0920
+        melt_rate_prefactor_exponent: 0.7876
+        per_century_trend: 303.2256
+        bump_amplitude: 285.8804
+        bump_duration: 4.0955
+        random_seed: 25
+      - weertman_c_prefactor: 0.9922
+        ungrounded_weertmanC_prefactor: 0.8315
+        glen_a_ref_prefactor: 0.8574
+        melt_rate_prefactor_exponent: -0.1131
+        per_century_trend: 1.1431
+        bump_amplitude: 224.1221
+        bump_duration: 3.9370
+        random_seed: 25
+      - weertman_c_prefactor: 0.7729
+        ungrounded_weertmanC_prefactor: 0.7494
+        glen_a_ref_prefactor: 0.7925
+        melt_rate_prefactor_exponent: 0.7682
+        per_century_trend: 69.8257
+        bump_amplitude: 337.6471
+        bump_duration: 10.0486
+        random_seed: 25
+      - weertman_c_prefactor: 0.6426
+        ungrounded_weertmanC_prefactor: 1.1320
+        glen_a_ref_prefactor: 0.8144
+        melt_rate_prefactor_exponent: 1.0113
+        per_century_trend: 247.0614
+        bump_amplitude: 180.7994
+        bump_duration: 7.9951
+        random_seed: 25
+      - weertman_c_prefactor: 0.6924
+        ungrounded_weertmanC_prefactor: 1.1308
+        glen_a_ref_prefactor: 1.1811
+        melt_rate_prefactor_exponent: 0.4855
+        per_century_trend: -7.4476
+        bump_amplitude: 161.3145
+        bump_duration: -1.1427
+        random_seed: 25
+      - weertman_c_prefactor: 0.7615
+        ungrounded_weertmanC_prefactor: 0.7217
+        glen_a_ref_prefactor: 0.7906
+        melt_rate_prefactor_exponent: 1.0143
+        per_century_trend: -228.3641
+        bump_amplitude: 231.9278
+        bump_duration: 6.6199
+        random_seed: 25
+      - weertman_c_prefactor: 0.7943
+        ungrounded_weertmanC_prefactor: 1.1711
+        glen_a_ref_prefactor: 1.0696
+        melt_rate_prefactor_exponent: 0.8791
+        per_century_trend: -9.8191
+        bump_amplitude: 187.6068
+        bump_duration: 4.4367
+        random_seed: 25
+      - weertman_c_prefactor: 1.0140
+        ungrounded_weertmanC_prefactor: 0.6927
+        glen_a_ref_prefactor: 1.0778
+        melt_rate_prefactor_exponent: 0.9795
+        per_century_trend: 375.6988
+        bump_amplitude: 132.4349
+        bump_duration: 4.4802
+        random_seed: 25
+      - weertman_c_prefactor: 0.7213
+        ungrounded_weertmanC_prefactor: 0.7301
+        glen_a_ref_prefactor: 1.3049
+        melt_rate_prefactor_exponent: 0.6037
+        per_century_trend: -238.8377
+        bump_amplitude: 139.5345
+        bump_duration: 4.3932
+        random_seed: 25
+      - weertman_c_prefactor: 0.6563
+        ungrounded_weertmanC_prefactor: 1.4802
+        glen_a_ref_prefactor: 1.3909
+        melt_rate_prefactor_exponent: 0.4318
+        per_century_trend: 125.2478
+        bump_amplitude: 333.8977
+        bump_duration: 8.8359
+        random_seed: 25
+      - weertman_c_prefactor: 1.0721
+        ungrounded_weertmanC_prefactor: 1.0014
+        glen_a_ref_prefactor: 0.8410
+        melt_rate_prefactor_exponent: 0.6940
+        per_century_trend: -9.8620
+        bump_amplitude: 49.2102
+        bump_duration: 1.2151
+        random_seed: 25
+      - weertman_c_prefactor: 1.0964
+        ungrounded_weertmanC_prefactor: 1.1809
+        glen_a_ref_prefactor: 1.0907
+        melt_rate_prefactor_exponent: 0.2505
+        per_century_trend: 122.5514
+        bump_amplitude: 20.4373
+        bump_duration: 1.5836
+        random_seed: 25
+      - weertman_c_prefactor: 1.0226
+        ungrounded_weertmanC_prefactor: 1.1047
+        glen_a_ref_prefactor: 1.1424
+        melt_rate_prefactor_exponent: -0.6128
+        per_century_trend: -250.5513
+        bump_amplitude: 255.3537
+        bump_duration: 7.0261
+        random_seed: 25
+      - weertman_c_prefactor: 0.9538
+        ungrounded_weertmanC_prefactor: 0.5523
+        glen_a_ref_prefactor: 0.6936
+        melt_rate_prefactor_exponent: 0.1903
+        per_century_trend: 26.1581
+        bump_amplitude: 194.8716
+        bump_duration: 0.6942
+        random_seed: 25
+      - weertman_c_prefactor: 0.9280
+        ungrounded_weertmanC_prefactor: 1.2845
+        glen_a_ref_prefactor: 0.9172
+        melt_rate_prefactor_exponent: 0.8985
+        per_century_trend: 77.7765
+        bump_amplitude: 215.0792
+        bump_duration: 0.6456
+        random_seed: 25
+      - weertman_c_prefactor: 0.6334
+        ungrounded_weertmanC_prefactor: 0.7715
+        glen_a_ref_prefactor: 1.1179
+        melt_rate_prefactor_exponent: -1.8316
+        per_century_trend: -371.0002
+        bump_amplitude: 203.7179
+        bump_duration: 3.1124
+        random_seed: 25
+      - weertman_c_prefactor: 0.9402
+        ungrounded_weertmanC_prefactor: 0.7969
+        glen_a_ref_prefactor: 0.3746
+        melt_rate_prefactor_exponent: 0.6475
+        per_century_trend: 249.0569
+        bump_amplitude: 191.0551
+        bump_duration: 2.8251
+        random_seed: 25
+      - weertman_c_prefactor: 0.7141
+        ungrounded_weertmanC_prefactor: 1.3191
+        glen_a_ref_prefactor: 1.0696
+        melt_rate_prefactor_exponent: 0.2880
+        per_century_trend: -47.3847
+        bump_amplitude: 389.8219
+        bump_duration: 2.7170
+        random_seed: 25
+      post_run:
+        - name:     check
+          args:
+            cmd:    /usr/bin/test -f run/outfile.nc
+            fail:   True
+        - name:     move
+          args:
+            dest:   "/data/icesheet_output/${USER}/WAVIhpc"
+        - name:     remove
+      post_batch:
+        - name:     check
+          args:
+            cmd:    ../scripts/BAS/post_batch.sh /data/icesheet_output/${USER}/WAVIhpc manual-eki-021-025-iteration002
+            fail:   True
