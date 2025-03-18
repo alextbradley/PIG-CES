@@ -1,3 +1,7 @@
+README
+
+
+
 - Priors.toml stores the information on the priors, which are the same for each realization of forcing.
 
 - observations/truth.jld2 contains the observations, used to update the EKI:
