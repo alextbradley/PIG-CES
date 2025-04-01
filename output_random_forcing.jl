@@ -1,7 +1,7 @@
 using WAVI, MAT, Printf
 
 t = 0:0.1:300
-random_seed = 21:40
+random_seed = 11:20
 smooth_timescale = 1.0
 rf_threshold = 2.0
 pc_max = -400

@@ -4,22 +4,30 @@ addpath('../functions/');
 realizations = ["021","022", "023", "024" ,"025", "026", "027", "028", "029", ...
     "030", "031", "032", "033", "038", "039", "040"];
 
+% potentially weird ones: 40, 31 (emulators are a bit wacked), 32
+% (extremely tight distributions??)
 %% T-test on the ensemble mean trends
 
 mean_trends = nan(1,length(realizations));
+max_trends = nan(1,length(realizations));
 
 for ir = 1:length(realizations)
 
     %load data
-    fname = strcat("emulate/mcmc_output/mcmc_output_realization", realizations(ir), ".csv");
+    fname = strcat("emulate/mcmc_output/mcmc_output_realization_lowN", realizations(ir), ".csv");
     A = readmatrix(fname);
 
     kde = fitdist(A(:,4),'kernel'); %4th one is the trend
     mean_trends(ir) = mean(kde);
+
+
+    [density, x_values] = ksdensity(A(:,4));
+    [max_density, idx] = max(density);
+    max_trends(ir) = x_values(idx);
 end
 
 %do the t-test
-[h,p,ci,stats] = ttest(mean_trends);
+[h,p,ci,stats] = ttest(max_trends);
 
 fprintf("Reject null hypothesis (trends not significantly different from zero) at the %.3g level \n", p);
 

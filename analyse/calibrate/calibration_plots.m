@@ -14,8 +14,8 @@
 %
 
 %specify plots
-scatter_error_and_parameter_colour_by_iteration = 0;
-plot_grv_and_ctsglpos_trajectories              = 0;
+scatter_error_and_parameter_colour_by_iteration = 1;
+plot_grv_and_ctsglpos_trajectories              = 1;
 plot_error_correlations                         = 0;
 plot_random_forcing_anomaly                     = 0;
 plot_EKI_vs_LHC                                 = 0;
@@ -25,7 +25,7 @@ gendata = 1
 addpath('../../functions/');
 
 %specify ensemble
-realization = 21;
+realization = 20;
 iterations  = 1:5;
 members     = 1:20;
 
@@ -81,7 +81,7 @@ if gendata
                 model_output(ii,im).time = trajectories.t + start_year;
             end
 
-            model_output(ii,im).grv = trajectories.grv; 
+            model_output(ii,im).grv = trajectories.grv;
             model_output(ii,im).gl_pos_discrete = trajectories.gl_pos_discrete;
             model_output(ii,im).gl_pos_cts = trajectories.gl_pos_cts;
 
@@ -119,7 +119,7 @@ if scatter_error_and_parameter_colour_by_iteration
         for im = 1:length(members)
 
             scatter(ax(1), model_input(ii,im).weertman_c_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
-         %   scatter(ax(2), model_input(ii,im).ungrounded_weertmanC_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
+            %   scatter(ax(2), model_input(ii,im).ungrounded_weertmanC_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
             scatter(ax(2), model_input(ii,im).glen_a_ref_prefactor, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
             scatter(ax(3), model_input(ii,im).melt_rate_prefactor_exponent, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
             scatter(ax(4), model_input(ii,im).per_century_trend, model_output(ii,im).dimensionless_grv_2015_error, sz, colmap(ii,:), 'filled');
@@ -134,7 +134,7 @@ if scatter_error_and_parameter_colour_by_iteration
         plot(ax(i), xl, [0,0], 'k--', 'linewidth',1.5)
         ax(i).XLim = xl;
     end
-    
+
     fig = gcf;
     fig.Position(3:4) = [1200, 600];
     numplot = numplot + 1;
@@ -248,7 +248,7 @@ if plot_random_forcing_anomaly
     fpath = strcat("../../model-inputs-and-outputs/realization", padded_realization, "/realization.mat");
     rf = load(fpath);
     figure(numplot); clf; hold on;
-    plot(rf.time + start_year, rf.pycnocline_center, 'k', 'linewidth', 2); 
+    plot(rf.time + start_year, rf.pycnocline_center, 'k', 'linewidth', 2);
     hold on
     plot([min(rf.time), max(rf.time)]+start_year, [-500,-500], 'k--', 'linewidth', 2)
     ax = gca;
@@ -266,56 +266,144 @@ if plot_random_forcing_anomaly
     t_since_1960 = rf.time;
     t_since_1960 = t_since_1960(idx:end);
     mdl = fitlm(t_since_1960, pc_since_1960);
-    cc =  mdl.Coefficients.Estimate; 
+    cc =  mdl.Coefficients.Estimate;
     plot(t_since_1960 + start_year, cc(1) + cc(2)*t_since_1960, 'r--', 'linewidth', 1.5);
-    
+
 
 end
 
-%% plot comparison between EKI and LHC 
+%% plot comparison between EKI and LHC
 
 if plot_EKI_vs_LHC
-    figure(numplot); clf; 
-    if iteration ~= 21
-    error("Only have LHC data for iteration = 21")
+    fig = figure(numplot); clf;
+    fig.Position(3:4) = [1250,800];
+    if realization ~= 21
+        error("Only have LHC data for iteration = 21")
     else
 
         colmap = cmocean('ice',length(iterations)+2 );
-    obscolor = [1,0.,0.];
-    figure(numplot); clf;
-    for i = 1:2
-        ax(i) = subplot(1,2,i);
-        hold(ax(i), "on");
-        box(ax(i), "on");
-        ax(i).FontSize = fontsize;
-        ax(i).FontName = 'GillSans';
-    end
-
-    for ii = 1:length(iterations)
-        for im = 1:length(members)
-            plot(ax(1), model_output(ii,im).time, smooth(model_output(ii,im).gl_pos_cts,1),'linewidth', 1.5, 'Color',colmap(ii,:) );
-
+        obscolor = [1,0.,0.];
+        figure(numplot); clf;
+        for i = 1:4
+            ax(i) = subplot(2,2,i);
+            hold(ax(i), "on");
+            box(ax(i), "on");
+            ax(i).FontSize = fontsize;
+           % ax(i).FontName = 'arial';
         end
-    end %end loop over iterations
 
-    % add observations
-    obs       = readmatrix("../../observations/truth_actual_cts.csv");
-    obs_times = readmatrix("../../observations/truth_times.csv") + start_year;
-    obs_err   = readmatrix('../../observations/noise_actual.csv');
+        for ii = 1:length(iterations)
+            for im = 1:length(members)
+                plot(ax(2), model_output(ii,im).time, model_output(ii,im).grv,'linewidth', 1.5, 'Color',colmap(ii,:) );
+                plot(ax(1), model_output(ii,im).time, model_output(ii,im).gl_pos_cts,'linewidth', 1.5, 'Color',colmap(ii,:) );
 
+            end
+        end %end loop over iterations
 
-    plot(ax(1),obs_times(1)*[1,1], obs(1)+obs_err(1)*[-1,1],'color', obscolor, 'linewidth', 1.5);
-    plot(ax(1),obs_times(2)*[1,1], obs(2)+obs_err(2)*[-1,1], 'color', obscolor, 'linewidth', 1.5);
-    plot(ax(1),obs_times(1:2), obs(1:2), 'ro', 'markersize', 10, 'markerfacecolor', obscolor);
-    %tidy stuff
-    ax(1).XLabel.String = "year";
-    ax(1).YLabel.String = "grounding line position";
-
-    ax(1).YLim = [-3.1,-2.55]*1e5;
+        % add observations
+        obs       = readmatrix("../../observations/truth_actual_cts.csv");
+        obs_times = readmatrix("../../observations/truth_times.csv") + start_year;
+        obs_err   = readmatrix('../../observations/noise_actual.csv');
 
 
+        plot(ax(2),obs_times(3)*[1,1], obs(3)+obs_err(3)*[-1,1], 'color', obscolor, 'linewidth', 1.5);
+        plot(ax(2),obs_times(3), obs(3), 'ro', 'markersize', 10, 'markerfacecolor', obscolor);
 
-    numplot = numplot + 1;
+        plot(ax(1),obs_times(1)*[1,1], obs(1)+obs_err(1)*[-1,1],'color', obscolor, 'linewidth', 1.5);
+        plot(ax(1),obs_times(2)*[1,1], obs(2)+obs_err(2)*[-1,1], 'color', obscolor, 'linewidth', 1.5);
+        plot(ax(1),obs_times(1:2), obs(1:2), 'ro', 'markersize', 10, 'markerfacecolor', obscolor);
+
+        %tidy stuff
+        ax(1).XLabel.String = "year";
+        ax(2).XLabel.String = "year";
+
+        ax(1).YLabel.String = "grounding line position";
+        ax(2).YLabel.String = "grounded volume";
+
+        ax(1).YLim = [-3.1,-2.55]*1e5;
+        ax(2).YLim = [4.3,5.1]*1e14;
+
+        %
+        % Repeat for the LHC, first by getting the data
+        %
+        lhc_n_runs = 0:99;
+        lhc_model_output = struct();
+        for im = 1:length(lhc_n_runs)
+            trajectory_output_path = strcat("../../model-inputs-and-outputs/realization", padded_realization,"_lhc/member", num2str(lhc_n_runs(im)), "/output_trajectory.mat");
+            trajectories = load(trajectory_output_path);
+
+            lhc_model_output(im).time = trajectories.t;
+            lhc_model_output(im).grv = trajectories.grv;
+            lhc_model_output(im).gl_pos_discrete = trajectories.gl_pos_discrete;
+            lhc_model_output(im).gl_pos_cts = trajectories.gl_pos_cts;
+
+            outputs_path = strcat("../../model-inputs-and-outputs/realization", padded_realization,"_lhc/member", num2str(lhc_n_runs(im)), "/outputs.csv");
+            outputs = readmatrix(outputs_path);
+
+            %calibration quantities
+            lhc_model_output(ii, im).dimensionless_gl_1930_error  = outputs(1);
+            lhc_model_output(ii, im).dimensionless_gl_2015_error  = outputs(2);
+            lhc_model_output(ii, im).dimensionless_grv_2015_error = outputs(3);
+
+
+            plot(ax(4), lhc_model_output(im).time+start_year , lhc_model_output(im).grv,'linewidth', 1.5 , 'color', 'k');
+            plot(ax(3), lhc_model_output(im).time+start_year, lhc_model_output(im).gl_pos_cts,'linewidth', 1.5, 'color', 'k' );
+  
+
+        end %end loop over members
+
+        ax(3).XLabel.String = "year";
+        ax(4).XLabel.String = "year";
+
+        ax(3).YLabel.String = "grounding line position";
+        ax(4).YLabel.String = "grounded volume";
+
+        ax(3).YLim = [-3.1,-2.55]*1e5;
+        ax(4).YLim = [4.3,5.1]*1e14;
+
+        plot(ax(4),obs_times(3)*[1,1], obs(3)+obs_err(3)*[-1,1], 'color', obscolor, 'linewidth', 1.5);
+        plot(ax(4),obs_times(3), obs(3), 'ro', 'markersize', 10, 'markerfacecolor', obscolor);
+
+        plot(ax(3),obs_times(1)*[1,1], obs(1)+obs_err(1)*[-1,1],'color', obscolor, 'linewidth', 1.5);
+        plot(ax(3),obs_times(2)*[1,1], obs(2)+obs_err(2)*[-1,1], 'color', obscolor, 'linewidth', 1.5);
+        plot(ax(3),obs_times(1:2), obs(1:2), 'ro', 'markersize', 10, 'markerfacecolor', obscolor);
+
+      %numplot = numplot + 1;
+
+      % plot the distribution of error sums
+      errs_1930 = [model_output(:).dimensionless_gl_1930_error];
+      errs_2015 = [model_output(:).dimensionless_gl_2015_error];
+      errs_grv  = [model_output(:).dimensionless_grv_2015_error];
+      net_errors = abs(errs_1930) + abs(errs_2015) + abs(errs_grv);
+      net_errors(net_errors > 100) = nan;
+
+      lhc_errs_1930 = [lhc_model_output(:).dimensionless_gl_1930_error];
+      lhc_errs_2015 = [lhc_model_output(:).dimensionless_gl_2015_error];
+      lhc_errs_grv  = [lhc_model_output(:).dimensionless_grv_2015_error];
+      lhc_net_errors = abs(lhc_errs_1930) + abs(lhc_errs_2015) + abs(lhc_errs_grv);
+      lhc_net_errors(lhc_net_errors > 100) = nan;
+
+
+
+      figure(numplot+1); clf; hold on; box on;
+      h1 = histogram(net_errors, 15); 
+      h1.FaceAlpha = 0.5;
+
+      h1 = histogram(lhc_net_errors, 15); 
+      h1.FaceAlpha = 0.5;
+
+      l = legend("EKI", "Latin Hypercube");
+      l.FontSize =14;
+
+
+      xlabel("net dimensionless error");
+      ylabel("count")
+      axs = gca;
+      axs.FontSize = 14;
+
+      xlim([0, 100])
+      
+      %numplot = numplot + 2;
     end
 
 

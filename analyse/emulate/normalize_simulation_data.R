@@ -21,6 +21,8 @@
 #   normalized_model_input    : (n_simulations x n_input) array of normalized model input parameters
 #
 #   normalized_model_output   : (n_simulations x n_output) array of normalized model output 
+#
+#   normalized_observations   : (1 x n_output) array of normalized observations
 
 ### normalize inputs
 input_normalization_mean_array <- matrix(rep(input_normalization_mean, n_members*n_iterations), nrow = n_members*n_iterations, byrow = TRUE)
@@ -31,3 +33,7 @@ normalized_model_input <- (model_input - input_normalization_mean_array)/input_n
 output_normalization_mean_array <- matrix(rep(output_normalization_mean, n_members*n_iterations), nrow = n_members*n_iterations, byrow = TRUE)
 output_normalization_sd_array   <- matrix(rep(output_normalization_sd, n_members*n_iterations), nrow = n_members*n_iterations, byrow = TRUE) #arrays with mean and sd repeated row wise
 normalized_model_output <- (model_output - output_normalization_mean_array)/output_normalization_sd_array
+
+### normalize observations
+normalized_observations <- (observations - output_normalization_mean)/output_normalization_sd
+

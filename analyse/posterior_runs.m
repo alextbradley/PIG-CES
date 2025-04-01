@@ -8,7 +8,7 @@ counterfactual_nobump = 32:47; %indices of runs
 counterfactual_nobumpnotrend = 48:63; %indices of runs
 
 anthropogenic = [0,1,2,3,4,5,6,7,8,9,11,12,13,14,15]; %remove one??
-anthropogenic = [0,1,2,5,6,7,8,9,11,12,13,14,15]; %remove one??
+anthropogenic = [0,1,2,5,6,7,8,9,11,12,13,14,15]; %remove some
 counterfactual = 16 + anthropogenic; %indices of runs
 counterfactual_nobump = 32 + anthropogenic; %indices of runs
 counterfactual_nobumpnotrend = 48 + anthropogenic; %indices of runs

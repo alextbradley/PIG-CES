@@ -7,7 +7,7 @@
 # plots:
 
 nvar <- length(init_sample)
-fac  <- 10   #how big is the factor relating model and obs error? 0 implies no model error
+fac  <- 0   #how big is the factor relating model and obs error? 0 implies no model error
 
 #normalize input stuff
 normalized_init_sample                <- (init_sample - input_normalization_mean)/input_normalization_sd
@@ -53,31 +53,86 @@ for (i in 1:n_steps){
   # update the trial value
   normalized_trial <- normalized_current + step_size
   
+  #
   # get the emulator predictions for each
-  model.predict<-predict(model, array(unname(normalized_trial), dim = c(1, length(normalized_trial)))) #we have to unname because the emulator is trained on unnamed data
-  normalized_trial_emulator_value <- model.predict$mean
-  normalized_trial_emulator_sd    <- model.predict$mean
+  #
+  #grounding line position 1930
+  model_gl1930.predict<-predict(model_gl1930, array(unname(normalized_trial), dim = c(1, length(normalized_trial)))) #we have to unname because the emulator is trained on unnamed data
+  normalized_trial_emulator_value_gl1930 <- model_gl1930.predict$mean
+  normalized_trial_emulator_sd_gl1930    <- model_gl1930.predict$sd
+  
+  model_gl1930.predict<-predict(model_gl1930, array(unname(normalized_current), dim = c(1, length(normalized_current)))) #we have to unname because the emulator is trained on unnamed data
+  normalized_current_emulator_value_gl1930 <- model_gl1930.predict$mean
+  normalized_current_emulator_sd_gl1930   <- model_gl1930.predict$sd
+  
+  #grounding line position 2015
+  model_gl2015.predict<-predict(model_gl2015, array(unname(normalized_trial), dim = c(1, length(normalized_trial)))) #we have to unname because the emulator is trained on unnamed data
+  normalized_trial_emulator_value_gl2015 <- model_gl2015.predict$mean
+  normalized_trial_emulator_sd_gl2015    <- model_gl2015.predict$sd
+  
+  model_gl2015.predict<-predict(model_gl2015, array(unname(normalized_current), dim = c(1, length(normalized_current)))) #we have to unname because the emulator is trained on unnamed data
+  normalized_current_emulator_value_gl2015 <- model_gl2015.predict$mean
+  normalized_current_emulator_sd_gl2015    <- model_gl2015.predict$sd
+  
+  #grounded volume 2015
+  model_grv2015.predict<-predict(model_grv2015, array(unname(normalized_trial), dim = c(1, length(normalized_trial)))) #we have to unname because the emulator is trained on unnamed data
+  normalized_trial_emulator_value_grv2015 <- model_grv2015.predict$mean
+  normalized_trial_emulator_sd_grv2015    <- model_grv2015.predict$sd
+  
+  model_grv2015.predict<-predict(model_grv2015, array(unname(normalized_current), dim = c(1, length(normalized_current)))) #we have to unname because the emulator is trained on unnamed data
+  normalized_current_emulator_value_grv2015 <- model_grv2015.predict$mean
+  normalized_current_emulator_sd_grv2015   <- model_grv2015.predict$sd
+  
+  normalized_trial_emulator_value   <- c(normalized_trial_emulator_value_gl1930,normalized_trial_emulator_value_gl2015,normalized_trial_emulator_value_grv2015)
+  normalized_current_emulator_value <- c(normalized_current_emulator_value_gl1930,normalized_current_emulator_value_gl2015,normalized_current_emulator_value_grv2015)
+  
+  normalized_trial_emulator_sd   <- c(normalized_trial_emulator_sd_gl1930,normalized_trial_emulator_sd_gl2015,normalized_trial_emulator_sd_grv2015)
+  normalized_current_emulator_sd <- c(normalized_current_emulator_sd_gl1930,normalized_current_emulator_sd_gl2015,normalized_current_emulator_sd_grv2015)
   
   
-  model.predict<-predict(model, array(unname(normalized_current), dim = c(1, length(normalized_current)))) #we have to unname because the emulator is trained on unnamed data
-  normalized_current_emulator_value <- model.predict$mean
-  normalized_current_emulator_sd   <- model.predict$mean
-  
-  
+  #
   #work out the terms in the log-likelihood (equation 2.14 in Cleary et al.)
-  phi_gp_trial <- 1/2 * (normalized_observations - normalized_trial_emulator_value)^2 / (normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_trial_emulator_sd^2) + 
-                1/2 * log(normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_trial_emulator_sd^2)
+  #
   
-  phi_gp_current <- 1/2 * (normalized_observations - normalized_current_emulator_value)^2 / (normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_current_emulator_sd^2) + 
-                1/2 * log(normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_current_emulator_sd^2)
+  #assemble terms
+  normalized_obs_emulator_error_trial   <- normalized_observations - normalized_trial_emulator_value;
+  normalized_obs_emulator_error_current <- normalized_observations - normalized_current_emulator_value
+  
+  Gamma_trial   <- diag(c(normalized_observation_error^2)) + diag(c(fac*normalized_observation_error^2)) + diag(c(normalized_trial_emulator_sd^2))
+  Gamma_current <- diag(c(normalized_observation_error^2)) + diag(c(fac*normalized_observation_error^2)) + diag(c(normalized_current_emulator_sd^2))
+  
+  phi_gp_trial <- 1/2  * normalized_obs_emulator_error_trial[1]^2 / Gamma_trial[1,1] +
+                  1/2  * normalized_obs_emulator_error_trial[2]^2 / Gamma_trial[2,2] +
+                  1/2  * normalized_obs_emulator_error_trial[3]^2 / Gamma_trial[3,3] +
+                  1/2 * log(det(Gamma_trial))
+  
+  phi_gp_current <- 1/2  * normalized_obs_emulator_error_current[1]^2 / Gamma_current[1,1] +
+                    1/2  * normalized_obs_emulator_error_current[2]^2 / Gamma_current[2,2] +
+                    1/2  * normalized_obs_emulator_error_current[3]^2 / Gamma_current[3,3] +
+                    1/2 * log(det(Gamma_current))
+  
+  #old using only the grounded volume
+ # phi_gp_trial <- 1/2  * normalized_obs_emulator_error_trial[3]^2 / Gamma_trial[3,3] +
+#    1/2 * log((Gamma_trial[3,3]^2))
+  
+  #phi_gp_current <- 1/2  * normalized_obs_emulator_error_current[3]^2 / Gamma_current[3,3] +
+  #                  1/2 * log((Gamma_current[3,3]^2))
   
   
+  #phi_gp_trial <- 1/2 * (normalized_observations - normalized_trial_emulator_value)^2 / (normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_trial_emulator_sd^2) + 
+  #              1/2 * log(normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_trial_emulator_sd^2)
+  
+  #phi_gp_current <- 1/2 * (normalized_observations - normalized_current_emulator_value)^2 / (normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_current_emulator_sd^2) + 
+  #              1/2 * log(normalized_observation_error^2 + fac*normalized_observation_error^2 + normalized_current_emulator_sd^2)
+  
+  #
   #work out the prior terms in the log-likelihood (second term in the round brackets in (2.15) of Cleary et al.)
+  #
   prior_term_trial   <- 1/2 * array((normalized_trial   - normalized_prior_mean), dim = c(1,nvar)) %*% inv_normalized_prior_covariance %*% array((normalized_trial   - normalized_prior_mean), dim = c(nvar,1))
   prior_term_current <- 1/2 * array((normalized_current - normalized_prior_mean), dim = c(1,nvar)) %*% inv_normalized_prior_covariance %*% array((normalized_current - normalized_prior_mean), dim = c(nvar,1))
   
   # compute the acceptance probability (equation 2.15 in Cleary et al.)
-  a = min(1, exp(-(phi_gp_trial + prior_term_trial) + (phi_gp_current + prior_term_current)))
+  a = min(1, as.matrix(exp(-(phi_gp_trial + prior_term_trial) + (phi_gp_current + prior_term_current))))
   
   # generate random number and accept/reject
   u <- runif(1)
@@ -91,9 +146,9 @@ for (i in 1:n_steps){
   normalized_samples[i,] <- normalized_current
   
   #store the model output
-  model.predict<-predict(model, array(unname(normalized_current), dim = c(1, length(normalized_current)))) #we have to unname because the emulator is trained on unnamed data
-  ice_loss <- c(ice_loss, model.predict$mean)
-  
+  model_grv2015.predict<-predict(model_grv2015, array(unname(normalized_current), dim = c(1, length(normalized_current)))) #we have to unname because the emulator is trained on unnamed data
+  ice_loss <- c(ice_loss, model_grv2015.predict$mean)
+
   
   #progress tracker
   if (i%%1000 == 0)
@@ -126,7 +181,10 @@ colnames(posterior_samples) <- c(input_colnames, "Index")
 plot_list <- list()
 
 ylims <- matrix(c(0,  0,-1, -200, 0. ,0,
-                  2,2, 2, 1000,600, 15), nrow = nvar, ncol = 2) #ylimits of plot
+                  2,  2, 2, 1000,600, 15), nrow = nvar, ncol = 2) #ylimits of plot
+
+#ylims <- matrix(c(0.6,  0.8, 0, -200, 0. ,5.0,
+#                  1.2,  1.6, 1, 200,400, 15), nrow = nvar, ncol = 2) #ylimits of plot
 
 for (i in 1:nvar) {
   p <- ggplot(posterior_samples, aes_string(x = "Index", y = input_colnames[i])) +
@@ -137,7 +195,7 @@ for (i in 1:nvar) {
   
   plot_list[[i]] <- p
 }
-#p <- grid.arrange(grobs = plot_list, ncol = 1)
+#p <- grid.arrange(grobs = plot_list, ncol = 1) #uncomment this line to show traceplot
 #plot_list
 
 # make a plot showing the posterior histograms alongside prior, kde, and naive posterior
@@ -169,6 +227,8 @@ for (i in 1:nvar) {
   
   #make plot
   xlims <- matrix(c((prior_mean - 2 *prior_sd), (prior_mean + 2*prior_sd)), nrow = nvar, ncol = 2)
+# xlims <- ylims
+  xlims[6,2] <- 12.5
   
   p <- ggplot(posterior_samples, aes_string(x = colnames(posterior_samples)[i])) +
     geom_histogram(aes(y = after_stat(density)), binwidth = (max( posterior_samples[,i]) - min( posterior_samples[,i]))/nbars, fill = "blue", alpha = 0.5) +
@@ -185,3 +245,4 @@ for (i in 1:nvar) {
   plot_list[[i]] <- p
 } #end loop over variables
 grid.arrange(grobs = plot_list, ncol = 3)
+

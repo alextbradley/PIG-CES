@@ -7,7 +7,8 @@ source("shared.R")
 ################################################################################
 ### set run info
 ################################################################################
-realization <- 27
+write_output <- 1
+for (realization in 36){
 iterations  <- 1:5
 members     <- 1:20
 
@@ -31,19 +32,18 @@ source("get_simulation_data.R")
 
 
 ################################################################################
-### restrict to only the grounded volume output
+### split the output into parts
 ################################################################################
 
-model_output <- model_output[,3]
-model_output <- matrix(model_output, nrow = length(model_output), ncol = 1 ) #make into a matrix
-colnames(model_output) <- c("grv_error_2015")
-observations <- observations[,3]
-observations_noise <- observations_noise[,3]
+model_output <- matrix(model_output, nrow = length(model_output[,1]), ncol = 3 ) #make into a matrix
+colnames(model_output) <- c("gl_error_1930","gl_error_2015","grv_error_2015")
+#observations <- observations[,3]
+#observations_noise <- observations_noise[,3]
 
 # adjust the observation noise? Make it 1% of the observed mass?
 grv_2015 <- read.csv("../../observations/truth_actual.csv", header = FALSE)/1e12 #everything is normalized by 1e12
 grv_2015 <- grv_2015[,3]
-observations_noise <- 0.01 * grv_2015 # 1 percent error
+observations_noise[,3] <- 0.01 * grv_2015 # 1 percent error
 
 ################################################################################
 ### remove the ungrounded_weertman_c_prefactor
@@ -82,20 +82,50 @@ kernel_type         <- 'matern_3_2'
 max_eval            <- 100
 alpha               <- NA  #alpha value for exponential kernels 
  
-#source("loocv.R")
+source("loocv.R")
+
+if (write_output){ #write the output of the LOOCV
+  file_name_gl1930 <- paste0("./mcmc_output/realization",padded_realization, "_LOOCV_gl1930.csv")
+  file_name_gl2015 <- paste0("./mcmc_output/realization",padded_realization, "_LOOCV_gl2015.csv")
+  file_name_grv2015 <- paste0("./mcmc_output/realization",padded_realization, "_LOOCV_grv2015.csv")
+
+  write.csv(LOO_data_gl_1930, file = file_name_gl1930, row.names = FALSE)
+  write.csv(LOO_data_gl_2015, file = file_name_gl2015, row.names = FALSE)
+  write.csv(LOO_data_grv_2015, file = file_name_grv2015, row.names = FALSE)
+  
+}
 
 ################################################################################
-### create the emulator
+### create the emulators
 ################################################################################
-model <- rgasp(design = normalized_model_input, 
-               response = normalized_model_output, 
+#1930 grounding line
+model_gl1930 <- rgasp(design = normalized_model_input, 
+                      response = normalized_model_output[,1], 
+                      nugget.est = nugget_est, 
+                      method=method, 
+                      kernel_type= kernel_type,
+                      max_eval = max_eval)
+
+
+#2015 grounding line
+model_gl2015 <- rgasp(design = normalized_model_input, 
+                       response = normalized_model_output[,2], 
+                       nugget.est = nugget_est, 
+                       method=method, 
+                       kernel_type= kernel_type,
+                       max_eval = max_eval)
+
+
+#2015 grounded volume
+model_grv2015 <- rgasp(design = normalized_model_input, 
+               response = normalized_model_output[,3], 
                nugget.est = nugget_est, 
                method=method, 
                kernel_type= kernel_type,
                max_eval = max_eval)
 
 ################################################################################
-### make main effects plots
+### make main effects plots (f)
 ########################################################################### #####
 
 # use the prior mean as the nominal values
@@ -114,8 +144,11 @@ nominal_values <- colMeans(final_iteration_parameters)
 final_iteration_parameters <- model_input[which(meta_data[,1] == max(meta_data[,1])),]
 init_sample                <- colMeans(final_iteration_parameters)
 
-n_steps <- 50000
+n_steps <- 51000
 n_burn  <- 1000
+
+#n_steps <- 30000
+#n_burn  <- 1000
 
 source("run_mcmc.R")
 
@@ -127,12 +160,11 @@ posterior_samples_noindex <- posterior_samples[,1:6]
 file_name <- paste0("./mcmc_output/mcmc_output_realization", padded_realization, ".csv")
 colnames(posterior_samples_noindex) <- input_colnames
   
-#write.csv(posterior_samples_noindex, file = file_name, row.names = FALSE)
-
+if (write_output){
+  write.csv(posterior_samples_noindex, file = file_name, row.names = FALSE)
+  }
 ################################################################################
 ### sample from the posterior with and without a trend 
 ################################################################################
 #source("sample_w_wo_trend.R")
-  
-
-
+}
