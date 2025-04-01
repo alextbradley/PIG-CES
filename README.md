@@ -6,8 +6,8 @@ Note that full simulation data is too large to be hosted here, and can be obtain
 
 
 The folder `model-inputs-and-outputs/realizationXXX/iterationYYY/memberZZZ` folder contains csv files `outputs.csv` and `outputs_cts.csv`, which contain the 3x1 model output for the the XXXth realization, YYYth iteration and ZZZth member of this iteration. These files are identical except that `outputs.csv` has the output when the grounding line position is measured in a discrete way (with the grounding line taken as the first not-fully grounded cell) and `outputs_cts.csv` has the output when the grounding line is measured as the weighted average of not-fully grounded cells, as outlined in the paper. Note that these outputs are in dimensionless form, they are:  
-     * the number of grid cells away from the observations for the 1930 grounding line position  
-     * the number of grid cells away from the observations for the 2015s grounding line position  
+     - the number of grid cells away from the observations for the 1930 grounding line position  
+     - the number of grid cells away from the observations for the 2015s grounding line position  
      * the difference between the modelled and observed grounded volume divided by 10^12 
      
 This folder also contains a matlab file "output_trajectory.mat", which contains:  
