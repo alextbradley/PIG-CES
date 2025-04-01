@@ -38,16 +38,4 @@ The `observations` folder contains information on the observations of ice sheet 
      - `noise.csv`: dimensionless observation noise  
      - `noise_actual`: actual observation noise (note that this file says that the noise in the grounded volume is 10^12, but we override this to be 1% of observed grounded volume, see line 46 of `emulate_sample_pipeline.R`.  
      
-
-
-
-
-
-
-- Priors.toml stores the information on the priors, which are the same for each realization of forcing.
-
-- observations/truth.jld2 contains the observations, used to update the EKI:
-     Γ = 1.0 * 3*10.0^3 * I #noisy observation of grounding line position, where I is a 2 x 2identity matrix
-     y is a 2 x 1 noisy observation of grounding line position
-
-- results are stored in /realizationXXX/iterationYYY/memberZZZ, with the eki stored in /realizationXXX/iterationYYY/eki.jld2
+`priors.toml` contains information on the prior distributions of model parameters (see https://github.com/CliMA/EnsembleKalmanProcesses.jl for more info). Note that we previously used another parameter `ungrounded_weertmanC_prefactor`, which appears in this file, but this is redundant.
