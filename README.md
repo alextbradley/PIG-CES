@@ -1,4 +1,4 @@
-# Code and Data for "Detection and attribution of anthropogenic climate change in retreat of the Pine Island Glacier"
+# Code and Data for "Quantifying and attributing the role of anthropogenic climate change in industrial-era retreat of Pine Island Glacier"
 
 This repository contains code (to run simulations and produce figures) and data (from model simulations) for analysis contained in "Detection and attribution of anthropogenic climate change in retreat of the Pine Island Glacier" by Bradley et al. 
 
