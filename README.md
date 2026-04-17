@@ -1,16 +1,15 @@
-# Code and Data for "Quantifying and attributing the role of anthropogenic climate change in industrial-era retreat of Pine Island Glacier"
+# Code and Data for "Detection and attribution of the role of anthropogenic climate change in industrial-era retreat of Pine Island Glacier"
 
 This repository contains code (to run simulations and produce figures) and data (from model simulations) for analysis contained in "Detection and attribution of anthropogenic climate change in retreat of the Pine Island Glacier" by Bradley et al. 
 
-Note that full simulation data is too large to be hosted here, and can be obtained on request from the corresponding author (alex.bradley@kcl.ac.uk). Simulation output for the three observational constraints (1930s grounding line position, 2015 grounding line position, and 2015 grounded ice volume) are hosted here.
+Note that full simulation data is too large to be hosted here, and can be obtained on request from the corresponding author (alex.bradley@kcl.ac.uk). All simulations are run in WAVI (https://github.com/WAVI-ice-sheet-model). Input files (ice temperatures, bathymetry, damage, velocities etc) are contained in `driver_files`. Templates to run simulations are in `templates`.
 
-
-The folder `model-inputs-and-outputs/realizationXXX/iterationYYY/memberZZZ` folder contains csv files `outputs.csv` and `outputs_cts.csv`, which contain the 3x1 model output for the the XXXth realization, YYYth iteration and ZZZth member of this iteration. These files are identical except that `outputs.csv` has the output when the grounding line position is measured in a discrete way (with the grounding line taken as the first not-fully grounded cell) and `outputs_cts.csv` has the output when the grounding line is measured as the weighted average of not-fully grounded cells, as outlined in the paper. Note that these outputs are in dimensionless form, they are:  
-     - the number of grid cells away from the observations for the 1930 grounding line position  
-     - the number of grid cells away from the observations for the 2015s grounding line position  
+Simulation output for the three observational constraints (1930s grounding line position, 2015 grounding line position, and 2015 grounded ice volume) are hosted in `model-inputs-and-outputs`. The folder `model-inputs-and-outputs/realizationXXX/iterationYYY/memberZZZ` folder contains csv files `outputs.csv` and `outputs_cts.csv`, which contain the 3x1 model output for the the XXXth realization, YYYth iteration and ZZZth member of this iteration. These two outputs files are identical except that `outputs.csv` has the output when the grounding line position is measured in a discrete way (with the grounding line taken as the first not-fully grounded cell) and `outputs_cts.csv` has the output when the grounding line is measured as the weighted average of not-fully grounded cells, as used in  in the paper. Note that these outputs are in dimensionless form, they are:  
+     - the number of grid cells away (3km) from the observations for the 1930 grounding line position  
+     - the number of grid cells away (3km) from the observations for the 2015s grounding line position  
      - the difference between the modelled and observed grounded volume divided by 10^12 
      
-This folder also contains a matlab file "output_trajectory.mat", which contains:  
+Each of these folders also contains a matlab file "output_trajectory.mat", which contains:  
      - temporal evolution of the grounding line position (discrete), called `gl_pos_discrete`  
      - temporal evolution of the grounding line position (continuous), called `gl_pos_cts`   
      - temporal evolution of the grounded volume, called `grv`  
@@ -39,3 +38,7 @@ The `observations` folder contains information on the observations of ice sheet 
      - `noise_actual`: actual observation noise (note that this file says that the noise in the grounded volume is 10^12, but we override this to be 1% of observed grounded volume, see line 46 of `emulate_sample_pipeline.R`.  
      
 `priors.toml` contains information on the prior distributions of model parameters (see https://github.com/CliMA/EnsembleKalmanProcesses.jl for more info). Note that we previously used another parameter `ungrounded_weertmanC_prefactor`, which appears in this file, but this is redundant.
+
+The folder `make-figures` contains scripts to generate the figures in the manuscript. 
+
+Get in touch (alex.bradley@kcl.ac.uk) if any of this is unclear - I'd be more than happy to walk you through it. 
